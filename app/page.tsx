@@ -49,196 +49,237 @@ export default function Dashboard() {
     );
   }
 
- // 3. LANDING PAGE COMPLÈTE
+  // ====================================================================================
+  // 3. LANDING PAGE PREMIUM (DESIGN MODERNE) - Visible si NON CONNECTÉ
+  // ====================================================================================
   if (status === "unauthenticated") {
     return (
-      <div className="min-h-screen bg-white">
-        {/* Navbar */}
-        <nav className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-gray-100 z-50">
+      <div className="min-h-screen bg-white selection:bg-purple-100 selection:text-purple-900 font-sans">
+        
+        {/* HEADER FLOTTANT */}
+        <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-xl border-b border-gray-100 z-50 transition-all">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-[#8B5CF6] rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-[#8B5CF6] to-[#6D28D9] rounded-lg flex items-center justify-center shadow-lg shadow-purple-200">
                   <span className="text-white font-bold text-lg">Co</span>
                 </div>
-                <span className="text-gray-900 font-bold text-xl">Commently</span>
+                <span className="text-gray-900 font-bold text-xl tracking-tight">Commently</span>
               </div>
-              <button onClick={() => signIn("google")} className="text-sm font-medium text-gray-600 hover:text-purple-600 transition-colors">
-                Connexion Bêta
-              </button>
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={() => signIn("google")} 
+                  className="hidden sm:block text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+                >
+                  Connexion
+                </button>
+                <button 
+                  onClick={() => signIn("google")}
+                  className="bg-gray-900 hover:bg-black text-white px-5 py-2 rounded-full text-sm font-bold transition-all hover:scale-105 shadow-md"
+                >
+                  Essai Gratuit
+                </button>
+              </div>
             </div>
           </div>
         </nav>
 
-        {/* Hero Section */}
-        <section className="relative overflow-hidden pt-20 pb-28">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <span className="inline-block py-1 px-3 rounded-full bg-purple-50 text-purple-600 text-sm font-semibold mb-6 border border-purple-100">
-              🚀 Accès Bêta Privé Disponible
-            </span>
-            <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-6 leading-tight">
-              Vos commentaires YouTube <br />
+        {/* HERO SECTION AVEC BACKGROUND ANIMÉ */}
+        <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+          {/* Background Blobs */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full z-0 pointer-events-none">
+            <div className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-purple-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse"></div>
+            <div className="absolute top-40 right-1/4 w-[400px] h-[400px] bg-blue-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
+          </div>
+
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="inline-flex items-center space-x-2 bg-white/50 backdrop-blur-sm border border-purple-100 rounded-full px-4 py-1.5 mb-8 shadow-sm">
+              <span className="flex h-2 w-2 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              <span className="text-sm font-medium text-purple-900">Nouveau : L'IA Claude 3.5 Sonnet intégrée</span>
+            </div>
+
+            <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-6 leading-[1.1]">
+              Dominez vos commentaires <br className="hidden md:block"/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8B5CF6] to-indigo-600">
-                gérés par l'IA
+                sans y passer la nuit.
               </span>
             </h1>
+            
             <p className="max-w-2xl mx-auto text-xl text-gray-600 mb-10 leading-relaxed">
-              Ne perdez plus 2h par jour à répondre. Commently analyse le sentiment, détecte le spam et rédige des réponses authentiques en un clic.
+              L'outil secret des YouTubers pour répondre 10x plus vite, booster l'engagement et filtrer les haters automatiquement.
             </p>
             
-            <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <button
                 onClick={() => signIn("google")}
-                className="flex items-center gap-3 bg-[#111827] text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-black transition-all hover:scale-105 shadow-xl hover:shadow-2xl"
+                className="flex items-center gap-3 bg-[#FF0000] text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-[#cc0000] transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 w-full sm:w-auto justify-center"
               >
-                <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                <span>Rejoindre la Bêta avec YouTube</span>
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                <span>Continuer avec YouTube</span>
               </button>
-              <p className="text-sm text-gray-500">🔒 Validé par Google • Aucune CB requise</p>
+              <div className="text-sm text-gray-500 font-medium">
+                🔒 Validé par Google • Gratuit
+              </div>
             </div>
-          </div>
-          
-          {/* Background decoration */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl z-0 pointer-events-none opacity-40">
-            <div className="absolute top-20 left-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
-            <div className="absolute top-20 right-10 w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+
+            {/* MOCKUP UI - FAUSSE INTERFACE POUR MONTRER LE PRODUIT */}
+            <div className="mt-16 relative mx-auto max-w-5xl">
+              <div className="absolute -inset-1 bg-gradient-to-r from-purple-400 to-pink-400 rounded-2xl blur opacity-20"></div>
+              <div className="relative bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden">
+                {/* Fake Browser Header */}
+                <div className="bg-gray-50 border-b border-gray-200 px-4 py-3 flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-red-400"></div>
+                  <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+                  <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                  <div className="ml-4 bg-white border border-gray-200 rounded-md px-3 py-1 text-xs text-gray-400 flex-1 text-center font-mono">
+                    commently.app/dashboard
+                  </div>
+                </div>
+                {/* Fake Interface Content */}
+                <div className="p-6 md:p-10 grid md:grid-cols-2 gap-8 text-left bg-white">
+                  {/* Left Column: Comment */}
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0"></div>
+                      <div>
+                        <div className="h-4 w-32 bg-gray-200 rounded mb-2"></div>
+                        <div className="h-3 w-64 bg-gray-100 rounded mb-1"></div>
+                        <div className="h-3 w-48 bg-gray-100 rounded"></div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 opacity-50">
+                      <div className="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0"></div>
+                      <div>
+                        <div className="h-4 w-24 bg-gray-200 rounded mb-2"></div>
+                        <div className="h-3 w-56 bg-gray-100 rounded"></div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Right Column: AI Response */}
+                  <div className="bg-purple-50 rounded-lg p-6 border border-purple-100 relative">
+                    <div className="absolute -top-3 -right-3 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">Suggestion IA ✨</div>
+                    <p className="text-gray-800 text-sm mb-4 leading-relaxed font-medium">
+                      "Merci beaucoup pour ton soutien ! 🙏 Ça fait super plaisir de voir que le nouveau format te plaît. Dis-moi en commentaire ce que tu voudrais voir la prochaine fois ! 🔥"
+                    </p>
+                    <div className="flex gap-2">
+                      <button className="bg-purple-600 text-white px-4 py-2 rounded-lg text-xs font-bold flex-1">✅ Poster</button>
+                      <button className="bg-white border border-gray-300 text-gray-600 px-4 py-2 rounded-lg text-xs font-bold">Éditer</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* Bento Grid Features */}
-        <section className="py-20 bg-gray-50">
+        {/* LOGOS / SOCIAL PROOF */}
+        <section className="py-10 border-y border-gray-100 bg-gray-50/50">
+          <div className="max-w-7xl mx-auto px-4 text-center">
+            <p className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-6">
+              Compatible avec vos outils préférés
+            </p>
+            <div className="flex justify-center items-center gap-12 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+              {/* Fake Logos for styling */}
+              <span className="text-xl font-bold text-gray-800 flex items-center gap-2"><div className="w-6 h-6 bg-red-600 rounded"></div> YouTube</span>
+              <span className="text-xl font-bold text-gray-800 flex items-center gap-2"><div className="w-6 h-6 bg-blue-600 rounded"></div> Gmail</span>
+              <span className="text-xl font-bold text-gray-800 flex items-center gap-2"><div className="w-6 h-6 bg-green-600 rounded"></div> Google AI</span>
+            </div>
+          </div>
+        </section>
+
+        {/* FEATURES BENTO GRID */}
+        <section className="py-24 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-center text-gray-900 mb-16">Pourquoi utiliser Commently ?</h2>
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-extrabold text-gray-900 mb-4">Tout ce qu'il vous faut pour scale.</h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Gérez une communauté de 100 ou 100 000 abonnés avec la même simplicité.
+              </p>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Feature 1 */}
-              <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-6 text-2xl">✨</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Réponses IA Contextuelles</h3>
-                <p className="text-gray-600">L'IA analyse le contexte de la vidéo et du commentaire pour suggérer 3 réponses pertinentes (Fun, Pro, Amical).</p>
+              <div className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:border-purple-200 transition-colors group">
+                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm text-3xl group-hover:scale-110 transition-transform">✨</div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Réponses IA Contextuelles</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  L'IA lit votre vidéo et le commentaire pour générer une réponse qui a du sens. Fini les réponses génériques.
+                </p>
               </div>
 
-              {/* Feature 2 */}
-              <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-6 text-2xl">🛡️</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Anti-Spam & Insultes</h3>
-                <p className="text-gray-600">Masquez automatiquement les arnaques crypto, les liens douteux et les insultes avant que votre communauté ne les voie.</p>
+              {/* Feature 2 (Large) */}
+              <div className="md:col-span-2 bg-gradient-to-br from-purple-900 to-indigo-900 p-8 rounded-3xl text-white relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                <div className="relative z-10">
+                  <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 text-3xl">🚀</div>
+                  <h3 className="text-2xl font-bold mb-3">Gagnez 5h par semaine</h3>
+                  <p className="text-purple-100 leading-relaxed max-w-md">
+                    L'automatisation intelligente trie le spam, met en avant les opportunités et rédige pour vous. Retrouvez du temps pour créer.
+                  </p>
+                </div>
               </div>
 
               {/* Feature 3 */}
-              <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-6 text-2xl">⚡</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Tri Prioritaire</h3>
-                <p className="text-gray-600">Ne ratez plus jamais une question importante ou une opportunité de collab noyée dans la masse.</p>
+              <div className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:border-red-200 transition-colors group">
+                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm text-3xl group-hover:scale-110 transition-transform">🛡️</div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Bouclier Anti-Spam</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Crypto, arnaques, insultes... Commently les détecte et les masque avant que votre communauté ne les voie.
+                </p>
+              </div>
+
+              {/* Feature 4 */}
+              <div className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:border-blue-200 transition-colors group">
+                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm text-3xl group-hover:scale-110 transition-transform">🎯</div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Tri Prioritaire</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Ne ratez plus jamais une question importante ou une proposition de sponsor noyée dans la masse.
+                </p>
+              </div>
+              
+              {/* Feature 5 */}
+              <div className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:border-yellow-200 transition-colors group">
+                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm text-3xl group-hover:scale-110 transition-transform">🎭</div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Ton Personnalisable</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  "Fun", "Pro", "Amical" ou instructions sur-mesure. L'IA s'adapte à votre style, pas l'inverse.
+                </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* FAQ / Reassurance */}
-        <section className="py-20 bg-white">
-          <div className="max-w-3xl mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Questions Fréquentes</h2>
-            <div className="space-y-6">
-              <div className="border-b border-gray-100 pb-6">
-                <h4 className="font-bold text-gray-900 mb-2">Est-ce sécurisé ?</h4>
-                <p className="text-gray-600">Oui. Nous utilisons l'API officielle de YouTube vérifiée par Google. Nous n'avons jamais accès à votre mot de passe, seulement la permission de lire et répondre aux commentaires.</p>
-              </div>
-              <div className="border-b border-gray-100 pb-6">
-                <h4 className="font-bold text-gray-900 mb-2">Est-ce que l'IA sonne comme un robot ?</h4>
-                <p className="text-gray-600">Non. Vous pouvez régler le ton (Amical, Gen Z, Pro) et donner des instructions personnalisées ("Signe toujours par Squeezie") pour que ça vous ressemble.</p>
-              </div>
-            </div>
+        {/* CTA FINAL */}
+        <section className="py-24 bg-white border-t border-gray-100">
+          <div className="max-w-4xl mx-auto px-4 text-center">
+            <h2 className="text-4xl font-extrabold text-gray-900 mb-8">
+              Prêt à reprendre le contrôle ?
+            </h2>
+            <button
+              onClick={() => signIn("google")}
+              className="bg-gray-900 hover:bg-black text-white px-10 py-5 rounded-full font-bold text-xl transition-all hover:scale-105 shadow-xl hover:shadow-2xl"
+            >
+              Démarrer l'essai gratuit maintenant
+            </button>
+            <p className="mt-6 text-gray-500">Pas de carte bancaire • Annulable à tout moment</p>
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="py-8 bg-gray-50 text-center border-t border-gray-200">
-          <p className="text-gray-500 text-sm">© 2024 Commently. Fait avec ❤️ pour les créateurs.</p>
-        </footer>
-      </div>
-    );
-  }
-
-        {/* Section Problème (Gris) */}
-        <section className="py-24 bg-gray-50 border-y border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Le problème des créateurs</h2>
-              <p className="text-gray-500 max-w-2xl mx-auto">Plus votre chaîne grandit, plus vous passez de temps à faire du support client au lieu de créer.</p>
+        {/* FOOTER SIMPLE */}
+        <footer className="py-12 bg-gray-50 border-t border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex items-center space-x-2">
+              <span className="text-gray-900 font-bold text-xl">Commently</span>
             </div>
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                { emoji: "😫", title: "La fatigue", desc: "Copier-coller 'Merci !' 50 fois par jour n'apporte aucune valeur." },
-                { emoji: "📉", title: "L'engagement", desc: "Ignorer les commentaires tue l'algorithme et déçoit vos fans." },
-                { emoji: "🤬", title: "Le spam", desc: "Les bots crypto et les insultes polluent votre espace commentaire." }
-              ].map((item, i) => (
-                <div key={i} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center hover:shadow-md transition-shadow">
-                  <div className="text-4xl mb-4">{item.emoji}</div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
-                  <p className="text-gray-600">{item.desc}</p>
-                </div>
-              ))}
+            <div className="text-gray-500 text-sm">
+              © 2024 Commently Inc. Tous droits réservés.
             </div>
-          </div>
-        </section>
-
-        {/* Section Features (Blanc) */}
-        <section id="features" className="py-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-2 gap-16 items-center">
-              <div className="space-y-8">
-                <h2 className="text-3xl font-bold text-gray-900">
-                  Une IA qui parle <span className="text-[#8B5CF6]">comme vous</span>
-                </h2>
-                <div className="space-y-6">
-                  {[
-                    { title: "6 Tons différents", desc: "Amical, Professionnel, Fun, Sarcasitque... Choisissez votre style." },
-                    { title: "Compréhension du contexte", desc: "L'IA analyse la vidéo et le commentaire pour une réponse pertinente." },
-                    { title: "Sécurité avant tout", desc: "Rien n'est posté sans votre validation (pour l'instant)." }
-                  ].map((feat, i) => (
-                    <div key={i} className="flex space-x-4">
-                      <div className="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center flex-shrink-0 mt-1">✓</div>
-                      <div>
-                        <h4 className="font-bold text-gray-900">{feat.title}</h4>
-                        <p className="text-gray-500">{feat.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              {/* Simulation Interface */}
-              <div className="bg-gray-900 rounded-2xl p-6 shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500">
-                <div className="bg-gray-800 rounded-xl p-4 mb-4 border border-gray-700">
-                  <div className="flex space-x-3 mb-3">
-                    <div className="w-8 h-8 bg-gray-600 rounded-full"></div>
-                    <div>
-                      <div className="w-24 h-3 bg-gray-600 rounded mb-1"></div>
-                      <div className="w-48 h-3 bg-gray-700 rounded"></div>
-                    </div>
-                  </div>
-                  <div className="text-gray-300 text-sm">Super vidéo ! Tu utilises quoi comme caméra ? 🤔</div>
-                </div>
-                <div className="bg-[#8B5CF6] bg-opacity-20 border border-[#8B5CF6] rounded-xl p-4">
-                  <div className="text-[#A78BFA] text-xs font-bold mb-2 uppercase">Suggestion IA (Ton: Éducatif)</div>
-                  <div className="text-white text-sm mb-3">Merci ! J'utilise une Sony A7III. C'est le top pour commencer ! 📸</div>
-                  <div className="flex justify-end">
-                    <button className="bg-[#8B5CF6] text-white px-3 py-1 rounded text-xs font-bold">Poster</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer className="bg-white border-t border-gray-100 py-12">
-          <div className="max-w-7xl mx-auto px-4 text-center">
-            <p className="text-gray-500 mb-4">© 2024 Commently. Fait avec ❤️ pour les créateurs.</p>
-            <div className="flex justify-center space-x-6 text-sm text-gray-400">
-              <a href="#" className="hover:text-gray-900">Confidentialité</a>
-              <a href="#" className="hover:text-gray-900">Conditions</a>
-              <a href="#" className="hover:text-gray-900">Twitter</a>
+            <div className="flex gap-6">
+              <a href="#" className="text-gray-500 hover:text-gray-900 text-sm">Twitter</a>
+              <a href="#" className="text-gray-500 hover:text-gray-900 text-sm">Contact</a>
             </div>
           </div>
         </footer>
@@ -246,7 +287,7 @@ export default function Dashboard() {
     );
   }
 
-  // --- LOGIQUE METIER DASHBOARD ---
+  // --- LOGIQUE METIER DASHBOARD (Reste Inchangée) ---
 
   function loadLikedComments() {
     try {

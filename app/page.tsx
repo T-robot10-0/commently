@@ -48,7 +48,7 @@ export default function Dashboard() {
   }
 
   // ====================================================================================
-  // 3. LANDING PAGE (CORRIGÉE & HONNÊTE) - Visible si NON CONNECTÉ
+  // 3. LANDING PAGE (SCROLLBAR CLEAN) - Visible si NON CONNECTÉ
   // ====================================================================================
   if (status === "unauthenticated") {
     return (
@@ -78,14 +78,13 @@ export default function Dashboard() {
 
         {/* HERO SECTION */}
         <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-          {/* Background Blobs */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full z-0 pointer-events-none">
             <div className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-purple-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse"></div>
             <div className="absolute top-40 right-1/4 w-[400px] h-[400px] bg-blue-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            {/* Badge modif */}
+            {/* Badge Groq */}
             <div className="inline-flex items-center space-x-2 bg-white/50 backdrop-blur-sm border border-purple-100 rounded-full px-4 py-1.5 mb-8 shadow-sm">
               <span className="flex h-2 w-2 relative">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
@@ -101,7 +100,6 @@ export default function Dashboard() {
               </span>
             </h1>
             
-            {/* Phrase supprimée ici, on laisse de l'espace ou une simple description */}
             <p className="max-w-2xl mx-auto text-xl text-gray-600 mb-10 leading-relaxed">
               Commently analyse vos commentaires YouTube et génère 3 suggestions de réponse instantanément grâce à l'IA.
             </p>
@@ -115,7 +113,6 @@ export default function Dashboard() {
                 <span>Connexion avec YouTube</span>
               </button>
               
-              {/* Texte de sécurité SOUS le bouton */}
               <div className="text-sm text-gray-500 font-medium mt-2">
                 🔒 Via l'API Officielle YouTube
               </div>
@@ -174,19 +171,14 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* LOGO SECTION (YouTube Animé) */}
+        {/* LOGO YOUTUBE */}
         <section className="py-12 border-y border-gray-100 bg-gray-50/50">
           <div className="max-w-7xl mx-auto px-4 text-center">
             <p className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-8">
               Compatible avec
             </p>
-            {/* Logo avec Animation au survol */}
             <div className="group flex justify-center items-center gap-4 transition-all duration-300 cursor-default">
-              <svg 
-                className="w-10 h-10 text-red-600 transition-transform duration-300 group-hover:scale-125 group-hover:drop-shadow-lg" 
-                fill="currentColor" 
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-10 h-10 text-red-600 transition-transform duration-300 group-hover:scale-125 group-hover:drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
               </svg>
               <span className="text-3xl font-bold text-gray-900 tracking-tight transition-colors group-hover:text-black">
@@ -234,7 +226,7 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* CTA FINAL */}
+        {/* CTA */}
         <section className="py-24 bg-white border-t border-gray-100">
           <div className="max-w-4xl mx-auto px-4 text-center">
             <h2 className="text-4xl font-extrabold text-gray-900 mb-8">
@@ -249,11 +241,9 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* FOOTER MODIFIÉ */}
+        {/* FOOTER */}
         <footer className="py-12 bg-gray-50 border-t border-gray-200">
           <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
-            
-            {/* Partie Gauche : Copyright & Slogan */}
             <div className="flex flex-col space-y-1">
               <div className="flex items-center justify-center md:justify-start space-x-2">
                 <span className="text-gray-900 font-bold text-xl">Commently</span>
@@ -261,13 +251,8 @@ export default function Dashboard() {
               </div>
               <p className="text-gray-500 text-sm">Gère tes commentaires YouTube avec l'IA</p>
             </div>
-
-            {/* Partie Droite : Contact */}
             <div className="flex gap-6">
-              <a 
-                href="mailto:commently.contact@gmail.com" 
-                className="text-gray-500 hover:text-purple-600 font-medium text-sm transition-colors"
-              >
+              <a href="mailto:commently.contact@gmail.com" className="text-gray-500 hover:text-purple-600 font-medium text-sm transition-colors">
                 Contact : commently.contact@gmail.com
               </a>
             </div>

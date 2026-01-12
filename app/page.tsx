@@ -48,7 +48,7 @@ export default function Dashboard() {
   }
 
   // ====================================================================================
-  // 3. LANDING PAGE (HONNÊTE & BELLE) - Visible si NON CONNECTÉ
+  // 3. LANDING PAGE (CORRIGÉE & HONNÊTE) - Visible si NON CONNECTÉ
   // ====================================================================================
   if (status === "unauthenticated") {
     return (
@@ -78,20 +78,20 @@ export default function Dashboard() {
 
         {/* HERO SECTION */}
         <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-          {/* Background Blobs (Décoration) */}
+          {/* Background Blobs */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full z-0 pointer-events-none">
             <div className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-purple-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse"></div>
             <div className="absolute top-40 right-1/4 w-[400px] h-[400px] bg-blue-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            {/* Badge honnête */}
+            {/* Badge modif */}
             <div className="inline-flex items-center space-x-2 bg-white/50 backdrop-blur-sm border border-purple-100 rounded-full px-4 py-1.5 mb-8 shadow-sm">
               <span className="flex h-2 w-2 relative">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
               </span>
-              <span className="text-sm font-medium text-purple-900">Propulsé par Llama 3 & Groq</span>
+              <span className="text-sm font-medium text-purple-900">Propulsé par Groq</span>
             </div>
 
             <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-6 leading-[1.1]">
@@ -101,11 +101,12 @@ export default function Dashboard() {
               </span>
             </h1>
             
+            {/* Phrase supprimée ici, on laisse de l'espace ou une simple description */}
             <p className="max-w-2xl mx-auto text-xl text-gray-600 mb-10 leading-relaxed">
-              Fini le syndrome de la page blanche. Commently analyse vos commentaires YouTube et génère 3 suggestions de réponse instantanément.
+              Commently analyse vos commentaires YouTube et génère 3 suggestions de réponse instantanément grâce à l'IA.
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col items-center justify-center gap-4">
               <button
                 onClick={() => signIn("google")}
                 className="flex items-center gap-3 bg-[#FF0000] text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-[#cc0000] transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 w-full sm:w-auto justify-center"
@@ -113,12 +114,14 @@ export default function Dashboard() {
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                 <span>Connexion avec YouTube</span>
               </button>
-              <div className="text-sm text-gray-500 font-medium">
+              
+              {/* Texte de sécurité SOUS le bouton */}
+              <div className="text-sm text-gray-500 font-medium mt-2">
                 🔒 Via l'API Officielle YouTube
               </div>
             </div>
 
-            {/* MOCKUP RÉALISTE (Reflète l'app : Commentaire -> 3 Suggestions) */}
+            {/* MOCKUP */}
             <div className="mt-16 relative mx-auto max-w-4xl">
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-400 to-pink-400 rounded-2xl blur opacity-20"></div>
               <div className="relative bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden">
@@ -134,7 +137,6 @@ export default function Dashboard() {
                 </div>
                 
                 <div className="p-8 grid md:grid-cols-5 gap-8 bg-white text-left">
-                  {/* Partie Gauche : Le Commentaire Reçu */}
                   <div className="md:col-span-2 space-y-4 border-r border-gray-100 pr-4">
                     <p className="text-xs font-bold text-gray-400 uppercase">Commentaire reçu</p>
                     <div className="flex gap-3">
@@ -148,7 +150,6 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  {/* Partie Droite : Les Suggestions IA */}
                   <div className="md:col-span-3 space-y-4">
                     <div className="flex justify-between items-center">
                       <p className="text-xs font-bold text-purple-600 uppercase">✨ Suggestions IA</p>
@@ -173,20 +174,29 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* LOGO SECTION (Juste YouTube) */}
-        <section className="py-10 border-y border-gray-100 bg-gray-50/50">
+        {/* LOGO SECTION (YouTube Animé) */}
+        <section className="py-12 border-y border-gray-100 bg-gray-50/50">
           <div className="max-w-7xl mx-auto px-4 text-center">
-            <p className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-6">
-              Compatible uniquement avec
+            <p className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-8">
+              Compatible avec
             </p>
-            <div className="flex justify-center items-center gap-4 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-              <svg className="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-              <span className="text-2xl font-bold text-gray-800 tracking-tight">YouTube</span>
+            {/* Logo avec Animation au survol */}
+            <div className="group flex justify-center items-center gap-4 transition-all duration-300 cursor-default">
+              <svg 
+                className="w-10 h-10 text-red-600 transition-transform duration-300 group-hover:scale-125 group-hover:drop-shadow-lg" 
+                fill="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+              <span className="text-3xl font-bold text-gray-900 tracking-tight transition-colors group-hover:text-black">
+                YouTube
+              </span>
             </div>
           </div>
         </section>
 
-        {/* FEATURES (HONNÊTES) */}
+        {/* FEATURES */}
         <section className="py-24 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
@@ -197,30 +207,27 @@ export default function Dashboard() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Feature 1 */}
               <div className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:border-purple-200 transition-colors group">
                 <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm text-3xl group-hover:scale-110 transition-transform">✨</div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-3">3 Suggestions IA</h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Pour chaque commentaire, l'IA vous propose 3 réponses différentes. Cliquez sur celle qui vous plaît, modifiez-la si besoin, et postez.
+                  Pour chaque commentaire, l'IA vous propose 3 réponses différentes. Cliquez, modifiez, postez.
                 </p>
               </div>
 
-              {/* Feature 2 */}
               <div className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:border-blue-200 transition-colors group">
                 <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm text-3xl group-hover:scale-110 transition-transform">🎭</div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-3">6 Tons de Réponse</h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Choisissez le style qui vous correspond : Amical, Professionnel, Fun, Éducatif, Motivant ou Humoristique.
+                  Choisissez le style : Amical, Professionnel, Fun, Éducatif, Motivant ou Humoristique.
                 </p>
               </div>
 
-              {/* Feature 3 */}
               <div className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:border-green-200 transition-colors group">
                 <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm text-3xl group-hover:scale-110 transition-transform">⚡</div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-3">Gain de Temps</h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Évitez de taper les mêmes réponses encore et encore. L'IA rédige la base pour vous, vous n'avez plus qu'à valider.
+                  Évitez de taper les mêmes réponses encore et encore. L'IA rédige la base pour vous.
                 </p>
               </div>
             </div>
@@ -242,14 +249,27 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* FOOTER */}
+        {/* FOOTER MODIFIÉ */}
         <footer className="py-12 bg-gray-50 border-t border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex items-center space-x-2">
-              <span className="text-gray-900 font-bold text-xl">Commently</span>
+          <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
+            
+            {/* Partie Gauche : Copyright & Slogan */}
+            <div className="flex flex-col space-y-1">
+              <div className="flex items-center justify-center md:justify-start space-x-2">
+                <span className="text-gray-900 font-bold text-xl">Commently</span>
+                <span className="text-gray-500 text-sm">© 2025</span>
+              </div>
+              <p className="text-gray-500 text-sm">Gère tes commentaires YouTube avec l'IA</p>
             </div>
-            <div className="text-gray-500 text-sm">
-              © 2024 Commently.
+
+            {/* Partie Droite : Contact */}
+            <div className="flex gap-6">
+              <a 
+                href="mailto:commently.contact@gmail.com" 
+                className="text-gray-500 hover:text-purple-600 font-medium text-sm transition-colors"
+              >
+                Contact : commently.contact@gmail.com
+              </a>
             </div>
           </div>
         </footer>

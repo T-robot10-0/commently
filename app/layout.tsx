@@ -1,8 +1,10 @@
-"use client"; // On passe tout en mode Client pour ne pas avoir besoin de fichier externe
+"use client";
 
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
+// 1. IMPORT
+import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,14 +16,14 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
-        {/* Le changement de nom ici */}
         <title>Commently - Gestionnaire YouTube IA</title>
         <meta name="description" content="Gérez vos commentaires YouTube 10x plus vite avec l'IA." />
       </head>
       <body className={inter.className}>
-        {/* On met le Provider directement ici, sans fichier séparé */}
         <SessionProvider>
           {children}
+          {/* 2. COMPOSANT ANALYTICS */}
+          <Analytics />
         </SessionProvider>
       </body>
     </html>

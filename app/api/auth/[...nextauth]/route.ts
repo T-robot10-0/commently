@@ -1,19 +1,19 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
-// LISTE DES EMAILS AUTORISÉS (TA WHITELIST)
+// 1. LISTE DES EMAILS AUTORISÉS (WHITELIST)
+// J'ai corrigé la syntaxe (fermeture du tableau) et nettoyé les commentaires
 const ALLOWED_EMAILS = [
   "t0robot10@gmail.com",
-  "contact@jongregor.com", // Pas actif
-  "lenversdudecode@gmail.com", // pas actif
-  "a.quatre44@gmail.com", // pas actif
-  "contact@ytbusiness.fr", // pas actif
-  "william.eliezer.contact@gmail.com", // pas actif
-  "commently.contact@gmail.com",
-  // Ajoute les emails de tes testeurs ici
+  "contact@jongregor.com",
+  "lenversdudecode@gmail.com",
+  "a.quatre44@gmail.com",
+  "contact@ytbusiness.fr",
+  "william.eliezer.contact@gmail.com",
+  "commently.contact@gmail.com"
 ];
 
-// Si tu veux ouvrir à tout le monde plus tard, mets ça sur false
+// 2. ACTIVER LE BLOCAGE (Met sur 'false' si tu veux ouvrir à tout le monde plus tard)
 const IS_BETA_CLOSED = true; 
 
 export const authOptions: NextAuthOptions = {
@@ -32,15 +32,21 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user }) {
+      // Si la bêta est fermée, on vérifie l'email
       if (IS_BETA_CLOSED) {
-        // Vérifie si l'email est dans la liste
-        if (user.email && ALLOWED_EMAILS.includes(user.email)) {
-          return true; // Autoriser
+        // On convertit l'email de l'utilisateur en minuscule pour comparer proprement
+        const userEmail = user.email?.toLowerCase();
+        
+        // Si l'email est dans la liste, on autorise (true), sinon on bloque (false)
+        if (userEmail && ALLOWED_EMAILS.includes(userEmail)) {
+          return true;
         } else {
-          return false; // Bloquer (Redirige vers page d'erreur)
+          console.log(`Accès refusé pour : ${userEmail}`); // Pour tes logs Vercel
+          return false; // Redirige vers une page d'erreur
         }
       }
-      return true; // Si Bêta ouverte, tout le monde passe
+      // Si la bêta est ouverte (false), tout le monde passe
+      return true; 
     },
     async jwt({ token, account }) {
       if (account) {
@@ -53,9 +59,6 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  pages: {
-    error: '/auth/error', // Page d'erreur personnalisée si besoin
-  }
 };
 
 const handler = NextAuth(authOptions);

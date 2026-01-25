@@ -4,8 +4,12 @@ import GoogleProvider from "next-auth/providers/google";
 // LISTE DES EMAILS AUTORISÉS (TA WHITELIST)
 const ALLOWED_EMAILS = [
   "t0robot10@gmail.com",
-  "beta.testeur1@gmail.com",
-  "beta.testeur2@gmail.com",
+  "contact@jongregor.com", // Pas actif
+  "lenversdudecode@gmail.com", // pas actif
+  "a.quatre44@gmail.com", // pas actif
+  "contact@ytbusiness.fr", // pas actif
+  "william.eliezer.contact@gmail.com", // pas actif
+  "commently.contact@gmail.com",
   // Ajoute les emails de tes testeurs ici
 ];
 

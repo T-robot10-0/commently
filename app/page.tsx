@@ -17,6 +17,9 @@ export default function Dashboard() {
   const [viewMode, setViewMode] = useState<'setup' | 'list' | 'editor'>('setup');
   const [draftReply, setDraftReply] = useState("");
   
+  // --- ÉTAT POUR LES COMMENTAIRES RÉPONDUS (Check visuel) ---
+  const [repliedComments, setRepliedComments] = useState<Set<string>>(new Set());
+
   const [generating, setGenerating] = useState(false);
   const [posting, setPosting] = useState(false);
   const [replies, setReplies] = useState<string[]>([]);
@@ -53,12 +56,11 @@ export default function Dashboard() {
   }
 
   // ====================================================================================
-  // 3. LANDING PAGE (SCROLLBAR CLEAN) - Visible si NON CONNECTÉ
+  // 3. LANDING PAGE
   // ====================================================================================
   if (status === "unauthenticated") {
     return (
       <div className="min-h-screen bg-white selection:bg-purple-100 selection:text-purple-900 font-sans">
-        
         {/* HEADER */}
         <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-xl border-b border-gray-100 z-50 transition-all">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -89,7 +91,6 @@ export default function Dashboard() {
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            {/* Badge Groq */}
             <div className="inline-flex items-center space-x-2 bg-white/50 backdrop-blur-sm border border-purple-100 rounded-full px-4 py-1.5 mb-8 shadow-sm">
               <span className="flex h-2 w-2 relative">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
@@ -137,7 +138,6 @@ export default function Dashboard() {
                     Interface Simplifiée
                   </div>
                 </div>
-                
                 <div className="p-8 grid md:grid-cols-5 gap-8 bg-white text-left">
                   <div className="md:col-span-2 space-y-4 border-r border-gray-100 pr-4">
                     <p className="text-xs font-bold text-gray-400 uppercase">Commentaire reçu</p>
@@ -151,13 +151,11 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
-
                   <div className="md:col-span-3 space-y-4">
                     <div className="flex justify-between items-center">
                       <p className="text-xs font-bold text-purple-600 uppercase">✨ Suggestions IA</p>
                       <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">Ton : Amical</span>
                     </div>
-                    
                     <div className="space-y-3">
                       <div className="p-3 border border-purple-100 rounded-lg hover:border-purple-300 cursor-pointer transition-all bg-purple-50/50">
                         <p className="text-sm text-gray-800">Merci beaucoup ! 🙏 La suite arrive la semaine prochaine, reste connecté !</p>
@@ -202,7 +200,6 @@ export default function Dashboard() {
                 Pas de fonctionnalités inutiles. Juste ce qu'il faut pour répondre plus vite.
               </p>
             </div>
-            
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:border-purple-200 transition-colors group">
                 <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm text-3xl group-hover:scale-110 transition-transform">✨</div>
@@ -211,7 +208,6 @@ export default function Dashboard() {
                   Pour chaque commentaire, l'IA vous propose 3 réponses différentes. Cliquez, modifiez, postez.
                 </p>
               </div>
-
               <div className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:border-blue-200 transition-colors group">
                 <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm text-3xl group-hover:scale-110 transition-transform">🎭</div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-3">6 Tons de Réponse</h3>
@@ -219,7 +215,6 @@ export default function Dashboard() {
                   Choisissez le style : Amical, Professionnel, Fun, Éducatif, Motivant ou Humoristique.
                 </p>
               </div>
-
               <div className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:border-green-200 transition-colors group">
                 <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm text-3xl group-hover:scale-110 transition-transform">⚡</div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-3">Gain de Temps</h3>
@@ -368,10 +363,9 @@ export default function Dashboard() {
   }
 
   // 2. Commencer l'édition (Soit vide, soit avec une réponse IA)
-  // C'est ICI que ça se passe : on met le texte dans draftReply et on change le mode
   function startEditing(text: string) {
     setDraftReply(text);
-    setViewMode('editor'); // On passe en mode éditeur
+    setViewMode('editor');
   }
 
   // 3. Poster la réponse
@@ -387,6 +381,10 @@ export default function Dashboard() {
       const data = await response.json();
       if (data.success) {
         setToast({ message: "✅ Réponse postée !", type: 'success' });
+        
+        // AJOUT : Marquer le commentaire comme répondu
+        setRepliedComments(prev => new Set(prev).add(selectedComment.id));
+        
         closeModal();
       } else {
         setToast({ message: "❌ Erreur : " + data.error, type: 'error' });
@@ -429,7 +427,7 @@ export default function Dashboard() {
         <nav className="flex-1 p-4 space-y-1">
           <Link href="/" className="flex items-center space-x-3 px-4 py-3 rounded-lg bg-purple-50 text-[#8B5CF6] font-medium relative">
             <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#8B5CF6] rounded-r"></div>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z" /></svg>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
             <span>Dashboard</span>
           </Link>
           
@@ -507,15 +505,23 @@ export default function Dashboard() {
             <div className="p-6 space-y-4">
               {filteredComments.map((comment) => {
                 const category = getCommentCategory(comment);
+                const isReplied = repliedComments.has(comment.id);
+
                 return (
-                  <div key={comment.id} className="border border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors">
+                  <div key={comment.id} className={`border rounded-lg p-5 transition-colors ${isReplied ? 'border-green-200 bg-green-50/20' : 'border-gray-200 hover:border-gray-300'}`}>
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center space-x-3 flex-1">
                         <img src={comment.authorImage} alt={comment.author} className="w-10 h-10 rounded-full" />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center space-x-2">
                             <span className="font-semibold text-gray-900">{comment.author}</span>
-                            <span className="text-xs text-gray-500">{new Date(comment.publishedAt).toLocaleDateString("fr-FR")}</span>
+                            {/* BADGE RÉPONDU À CÔTÉ DU NOM */}
+                            {isReplied && (
+                              <span className="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider">
+                                RÉPONDU
+                              </span>
+                            )}
+                            <span className="text-xs text-gray-500">• {new Date(comment.publishedAt).toLocaleDateString("fr-FR")}</span>
                           </div>
                         </div>
                       </div>
@@ -524,7 +530,16 @@ export default function Dashboard() {
                     <p className="text-gray-700 mb-4 leading-relaxed">{comment.text}</p>
                     <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                       <div className="flex items-center space-x-1 text-gray-600"><span className="text-sm">❤️ {comment.likeCount || 0}</span></div>
-                      <button onClick={() => openModal(comment)} className="flex items-center space-x-2 px-4 py-2 bg-[#8B5CF6] text-white rounded-lg hover:bg-[#7C3AED] transition-colors text-sm font-medium"><span>✨ Générer réponse</span></button>
+                      
+                      {/* BOUTON DYNAMIQUE */}
+                      {isReplied ? (
+                        <div className="flex items-center space-x-1 text-green-600 font-medium text-sm">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                          <span>Répondu</span>
+                        </div>
+                      ) : (
+                        <button onClick={() => openModal(comment)} className="flex items-center space-x-2 px-4 py-2 bg-[#8B5CF6] text-white rounded-lg hover:bg-[#7C3AED] transition-colors text-sm font-medium"><span>✨ Générer réponse</span></button>
+                      )}
                     </div>
                   </div>
                 );

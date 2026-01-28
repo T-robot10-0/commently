@@ -13,12 +13,14 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [selectedComment, setSelectedComment] = useState<any>(null);
   
-  // --- NOUVEAUX ÉTATS POUR L'ÉDITION ---
+  // --- ÉTATS ÉDITION ---
   const [viewMode, setViewMode] = useState<'setup' | 'list' | 'editor'>('setup');
   const [draftReply, setDraftReply] = useState("");
   
-  // --- ÉTAT POUR LES COMMENTAIRES RÉPONDUS (Persistent) ---
+  // --- ÉTATS GESTION RÉPONSES ---
   const [repliedComments, setRepliedComments] = useState<Set<string>>(new Set());
+  // Nouvel état pour l'animation temporaire (Le message qui passe en vert avant de bouger)
+  const [animatingId, setAnimatingId] = useState<string | null>(null);
 
   const [generating, setGenerating] = useState(false);
   const [posting, setPosting] = useState(false);
@@ -31,13 +33,13 @@ export default function Dashboard() {
   const [filterType, setFilterType] = useState<'all' | 'prioritaires' | 'normal' | 'spam'>('normal');
   const [searchQuery, setSearchQuery] = useState("");
 
-  // 1. GESTION SESSION + CHARGEMENT SAUVEGARDES
+  // 1. GESTION SESSION
   useEffect(() => {
     if (status === "authenticated") {
       fetchComments();
       loadSettings();
       loadLikedComments();
-      loadRepliedComments(); // Chargement de l'historique
+      loadRepliedComments();
     }
   }, [status]);
 
@@ -264,7 +266,7 @@ export default function Dashboard() {
     );
   }
 
-  // --- LOGIQUE METIER DASHBOARD (Reste Inchangée) ---
+  // --- LOGIQUE METIER DASHBOARD ---
 
   function loadLikedComments() {
     try {
@@ -273,7 +275,6 @@ export default function Dashboard() {
     } catch (error) { console.error(error); }
   }
 
-  // NOUVELLE FONCTION DE CHARGEMENT
   function loadRepliedComments() {
     try {
       const storedReplies = localStorage.getItem("repliedComments");
@@ -327,7 +328,7 @@ export default function Dashboard() {
   }
 
   function getFilteredComments(videoComments: any[]) {
-    // 1. On filtre d'abord selon le type (Tous, Urgent, Spam)
+    // 1. Filtrer
     const filtered = videoComments.filter(comment => {
       const category = getCommentCategory(comment);
       if (filterType === 'all') return true;
@@ -337,13 +338,12 @@ export default function Dashboard() {
       return true;
     });
 
-    // 2. On trie : Les NON RÉPONDUS d'abord, les RÉPONDUS à la fin
+    // 2. Trier : Non-répondus en premier, Répondus en dernier
     return filtered.sort((a, b) => {
       const aReplied = repliedComments.has(a.id);
       const bReplied = repliedComments.has(b.id);
-      
-      if (aReplied === bReplied) return 0; // Si même statut, on garde l'ordre de date
-      return aReplied ? 1 : -1; // Si A est répondu, il part à la fin (1)
+      if (aReplied === bReplied) return 0;
+      return aReplied ? 1 : -1;
     });
   }
 
@@ -352,7 +352,7 @@ export default function Dashboard() {
   function openModal(comment: any) {
     setSelectedComment(comment);
     setReplies([]);
-    setViewMode('setup'); // On commence en mode config
+    setViewMode('setup');
     setSelectedTone(localStorage.getItem("defaultTone") || "amical");
     setCustomInstructions(localStorage.getItem("customInstructions") || "");
   }
@@ -374,7 +374,7 @@ export default function Dashboard() {
       const data = await response.json();
       if (data.replies) {
         setReplies(data.replies);
-        setViewMode('list'); // On passe en mode liste de suggestions
+        setViewMode('list');
         setToast({ message: "✨ Réponses générées !", type: 'success' });
       }
     } catch (error) {
@@ -382,15 +382,15 @@ export default function Dashboard() {
     } finally { setGenerating(false); }
   }
 
-  // 2. Commencer l'édition (Soit vide, soit avec une réponse IA)
+  // 2. Editer
   function startEditing(text: string) {
     setDraftReply(text);
     setViewMode('editor');
   }
 
-  // 3. Poster la réponse
+  // 3. Poster (AVEC ANIMATION)
   async function postReply() {
-    if (!selectedComment || !draftReply) return; // On poste draftReply
+    if (!selectedComment || !draftReply) return;
     setPosting(true);
     try {
       const response = await fetch("/api/youtube/post-reply", {
@@ -402,12 +402,18 @@ export default function Dashboard() {
       if (data.success) {
         setToast({ message: "✅ Réponse postée !", type: 'success' });
         
-        // --- MISE A JOUR ET SAUVEGARDE ---
-        const newReplied = new Set(repliedComments).add(selectedComment.id);
-        setRepliedComments(newReplied);
-        localStorage.setItem("repliedComments", JSON.stringify([...newReplied]));
-        
+        // 1. Déclencher l'animation verte sur l'ID
+        setAnimatingId(selectedComment.id);
         closeModal();
+
+        // 2. Attendre 1 seconde, puis déplacer à la fin
+        setTimeout(() => {
+          const newReplied = new Set(repliedComments).add(selectedComment.id);
+          setRepliedComments(newReplied);
+          localStorage.setItem("repliedComments", JSON.stringify([...newReplied]));
+          setAnimatingId(null); // Fin de l'animation
+        }, 1000);
+
       } else {
         setToast({ message: "❌ Erreur : " + data.error, type: 'error' });
       }
@@ -425,7 +431,7 @@ export default function Dashboard() {
 
   const videos = getUniqueVideos(comments);
   const selectedVideoComments = selectedVideo ? getCommentsForVideo(selectedVideo) : [];
-  const filteredComments = getFilteredComments(selectedVideoComments); // Ce tableau est maintenant trié
+  const filteredComments = getFilteredComments(selectedVideoComments);
   const countByCategory = {
     prioritaires: selectedVideoComments.filter(c => getCommentCategory(c) === 'URGENT').length,
     normal: selectedVideoComments.filter(c => getCommentCategory(c) === 'NORMAL').length,
@@ -528,18 +534,29 @@ export default function Dashboard() {
               {filteredComments.map((comment) => {
                 const category = getCommentCategory(comment);
                 const isReplied = repliedComments.has(comment.id);
+                // Si c'est l'ID en train d'être animé
+                const isAnimating = animatingId === comment.id;
 
                 return (
-                  <div key={comment.id} className={`border rounded-lg p-5 transition-colors ${isReplied ? 'border-green-200 bg-green-50/20' : 'border-gray-200 hover:border-gray-300'}`}>
+                  <div 
+                    key={comment.id} 
+                    className={`border rounded-lg p-5 transition-all duration-500 ease-in-out transform ${
+                      isAnimating 
+                        ? 'bg-green-100 border-green-500 scale-[1.02]' // Animation "Succès"
+                        : isReplied 
+                          ? 'border-green-200 bg-green-50/20' 
+                          : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center space-x-3 flex-1">
                         <img src={comment.authorImage} alt={comment.author} className="w-10 h-10 rounded-full" />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center space-x-2">
                             <span className="font-semibold text-gray-900">{comment.author}</span>
-                            {/* BADGE RÉPONDU À CÔTÉ DU NOM */}
+                            {/* BADGE RÉPONDU */}
                             {isReplied && (
-                              <span className="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider">
+                              <span className="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider animate-fadeIn">
                                 RÉPONDU
                               </span>
                             )}
@@ -573,7 +590,7 @@ export default function Dashboard() {
         )}
       </main>
 
-      {/* MODAL IA + EDITION */}
+      {/* MODAL IA + EDITION (Reste inchangé mais inclus) */}
       {selectedComment && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
           <div className="relative bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
@@ -743,7 +760,7 @@ export default function Dashboard() {
               )}
             </div>
 
-            {/* Footer Modal (sauf en mode éditeur qui a ses propres boutons) */}
+            {/* Footer Modal */}
             {viewMode !== 'editor' && (
               <div className="border-t px-6 py-4 bg-gray-50 rounded-b-2xl flex justify-between items-center">
                 <button onClick={closeModal} className="text-gray-600 hover:text-gray-800 font-medium">Fermer</button>

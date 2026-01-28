@@ -13,10 +13,10 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [selectedComment, setSelectedComment] = useState<any>(null);
   
-  // Nouveaux états pour l'édition manuelle
-  const [viewMode, setViewMode] = useState<'setup' | 'list' | 'editor'>('setup');
-  const [draftReply, setDraftReply] = useState(""); 
-
+  // --- NOUVEAUX ÉTATS POUR L'ÉDITION ---
+  const [isEditing, setIsEditing] = useState(false); // Est-ce qu'on est en mode édition ?
+  const [responseText, setResponseText] = useState(""); // Le texte dans la boite
+  
   const [generating, setGenerating] = useState(false);
   const [posting, setPosting] = useState(false);
   const [replies, setReplies] = useState<string[]>([]);
@@ -53,7 +53,7 @@ export default function Dashboard() {
   }
 
   // ====================================================================================
-  // 3. LANDING PAGE PREMIUM (DESIGN COMPLET) - Visible si NON CONNECTÉ
+  // 3. LANDING PAGE (SCROLLBAR CLEAN) - Visible si NON CONNECTÉ
   // ====================================================================================
   if (status === "unauthenticated") {
     return (
@@ -89,6 +89,7 @@ export default function Dashboard() {
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            {/* Badge Groq */}
             <div className="inline-flex items-center space-x-2 bg-white/50 backdrop-blur-sm border border-purple-100 rounded-full px-4 py-1.5 mb-8 shadow-sm">
               <span className="flex h-2 w-2 relative">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
@@ -331,18 +332,22 @@ export default function Dashboard() {
     });
   }
 
-  // --- ACTIONS MODAL (C'est ici qu'on gère l'édition) ---
+  // --- ACTIONS MODAL ET ÉDITION ---
 
   function openModal(comment: any) {
     setSelectedComment(comment);
     setReplies([]);
-    setDraftReply(""); // Reset du brouillon
-    setViewMode('setup'); // On commence en mode config
+    setIsEditing(false);
+    setResponseText(""); // Reset text
     setSelectedTone(localStorage.getItem("defaultTone") || "amical");
     setCustomInstructions(localStorage.getItem("customInstructions") || "");
   }
 
-  // 1. Générer
+  function startEditing(text: string) {
+    setResponseText(text);
+    setIsEditing(true);
+  }
+
   async function generateReplies() {
     if (!selectedComment || !selectedTone) return;
     setGenerating(true);
@@ -359,7 +364,6 @@ export default function Dashboard() {
       const data = await response.json();
       if (data.replies) {
         setReplies(data.replies);
-        setViewMode('list'); // On passe en mode liste de suggestions
         setToast({ message: "✨ Réponses générées !", type: 'success' });
       }
     } catch (error) {
@@ -367,21 +371,14 @@ export default function Dashboard() {
     } finally { setGenerating(false); }
   }
 
-  // 2. Commencer l'édition (Soit vide, soit avec une réponse IA)
-  function startEditing(text: string) {
-    setDraftReply(text);
-    setViewMode('editor'); // On passe en mode éditeur
-  }
-
-  // 3. Poster la réponse
-  async function postReply() {
-    if (!selectedComment || !draftReply) return; // On poste draftReply, pas une reply de la liste
+  async function postReply(textToPost: string) {
+    if (!selectedComment) return;
     setPosting(true);
     try {
       const response = await fetch("/api/youtube/post-reply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ commentId: selectedComment.id, replyText: draftReply }),
+        body: JSON.stringify({ commentId: selectedComment.id, replyText: textToPost }),
       });
       const data = await response.json();
       if (data.success) {
@@ -398,8 +395,8 @@ export default function Dashboard() {
   function closeModal() {
     setSelectedComment(null);
     setReplies([]);
-    setDraftReply("");
-    setViewMode('setup');
+    setIsEditing(false);
+    setResponseText("");
   }
 
   const videos = getUniqueVideos(comments);
@@ -428,7 +425,7 @@ export default function Dashboard() {
         <nav className="flex-1 p-4 space-y-1">
           <Link href="/" className="flex items-center space-x-3 px-4 py-3 rounded-lg bg-purple-50 text-[#8B5CF6] font-medium relative">
             <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#8B5CF6] rounded-r"></div>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
             <span>Dashboard</span>
           </Link>
           
@@ -533,7 +530,7 @@ export default function Dashboard() {
         )}
       </main>
 
-      {/* MODAL AVEC 6 TONS + FONCTION EDITER */}
+      {/* MODAL IA + EDITION */}
       {selectedComment && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
           <div className="relative bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
@@ -558,172 +555,144 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* MODE CONFIGURATION (Setup) */}
-              {viewMode === 'setup' && !generating && (
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <p className="text-sm font-medium text-gray-700">Choisir le ton</p>
-                    <Link href="/settings" className="text-xs text-purple-600 hover:text-purple-700">Paramètres →</Link>
+              {/* === MODE ÉDITION === */}
+              {isEditing ? (
+                <div className="animate-fadeIn">
+                  <div className="flex justify-between items-center mb-3">
+                    <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">MODIFICATION EN COURS</p>
+                    <button onClick={() => setIsEditing(false)} className="text-xs text-purple-600 hover:underline">
+                      Retour aux choix
+                    </button>
                   </div>
                   
-                  {/* LES 6 TONS */}
-                  <div className="grid grid-cols-3 gap-2 mb-6">
-                    {[
-                      { value: "amical", icon: "😊", label: "Amical" },
-                      { value: "professionnel", icon: "💼", label: "Professionnel" },
-                      { value: "fun", icon: "🎉", label: "Fun" },
-                      { value: "educatif", icon: "📚", label: "Éducatif" },
-                      { value: "motivant", icon: "💪", label: "Motivant" },
-                      { value: "humoristique", icon: "😂", label: "Humoristique" },
-                    ].map((tone) => (
-                      <button
-                        key={tone.value}
-                        onClick={() => setSelectedTone(tone.value)}
-                        className={`${
-                          selectedTone === tone.value
-                            ? "bg-[#8B5CF6] text-white border-[#8B5CF6]"
-                            : "bg-white text-gray-700 border-gray-300 hover:border-purple-400"
-                        } border-2 px-3 py-2 rounded-lg transition-all font-medium text-sm flex items-center justify-center space-x-1`}
-                      >
-                        <span>{tone.icon}</span>
-                        <span>{tone.label}</span>
-                      </button>
-                    ))}
-                  </div>
-
-                  {customInstructions && (
-                    <div className="mb-6 bg-purple-50 border border-purple-200 rounded-lg p-3">
-                      <p className="text-xs text-purple-900">
-                        <span className="font-semibold text-purple-900">✨ Instructions personnalisées actives :</span>
-                        <br />
-                        <span className="mt-1 inline-block text-purple-800">{customInstructions}</span>
-                      </p>
-                    </div>
-                  )}
-
-                  <div className="flex gap-4">
-                    {/* BOUTON ÉCRIRE SOI-MÊME */}
-                    <button
-                      onClick={() => startEditing("")}
-                      className="flex-1 flex items-center justify-center space-x-2 border-2 border-gray-300 text-gray-700 font-semibold py-3 rounded-lg hover:border-gray-400 transition-colors"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                      <span>Écrire soi-même</span>
-                    </button>
-
-                    {/* BOUTON GÉNÉRER */}
-                    <button
-                      onClick={generateReplies}
-                      disabled={!selectedTone}
-                      className="flex-[2] bg-[#8B5CF6] hover:bg-[#7C3AED] disabled:bg-gray-300 text-white font-semibold py-3 rounded-lg transition-all flex items-center justify-center space-x-2"
-                    >
-                      <span>✨</span>
-                      <span>Générer 3 suggestions</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* CHARGEMENT */}
-              {generating && (
-                <div className="text-center py-12">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B5CF6] mx-auto mb-4"></div>
-                  <p className="text-gray-600">Génération en cours...</p>
-                </div>
-              )}
-
-              {/* MODE LISTE (Résultats IA) */}
-              {viewMode === 'list' && (
-                <div className="space-y-4">
-                  <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Suggestions générées</p>
-                  {replies.map((reply, index) => (
-                    <div
-                      key={index}
-                      onClick={() => startEditing(reply)}
-                      className="group border-2 border-gray-200 rounded-lg p-4 hover:border-[#8B5CF6] cursor-pointer transition-all relative bg-white"
-                    >
-                      <p className="text-gray-800 pr-8">{reply}</p>
-                      <div className="absolute top-4 right-4 text-gray-400 group-hover:text-[#8B5CF6]">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                      </div>
-                      <div className="mt-2 text-xs text-[#8B5CF6] font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                        Cliquez pour modifier
-                      </div>
-                    </div>
-                  ))}
-
-                  <button
-                    onClick={() => setViewMode('setup')}
-                    className="w-full mt-4 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg font-medium transition-colors"
-                  >
-                    🔄 Changer le ton et regénérer
-                  </button>
-                </div>
-              )}
-
-              {/* MODE ÉDITEUR (Modification manuelle) */}
-              {viewMode === 'editor' && (
-                <div className="animate-fadeIn">
-                  <p className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">MODIFICATION EN COURS</p>
                   <div className="relative">
                     <textarea
-                      value={draftReply}
-                      onChange={(e) => setDraftReply(e.target.value)}
+                      value={responseText}
+                      onChange={(e) => setResponseText(e.target.value)}
                       className="w-full h-32 p-4 border-2 border-[#8B5CF6] rounded-xl focus:outline-none text-gray-800 text-base shadow-sm resize-none"
                       placeholder="Écrivez votre réponse ici..."
                       autoFocus
                     />
                     <div className="absolute top-3 right-3 w-2 h-2 bg-[#8B5CF6] rounded-full animate-pulse"></div>
                   </div>
-                  
-                  {replies.length > 0 ? (
-                    <button onClick={() => setViewMode('list')} className="text-sm text-gray-500 hover:text-[#8B5CF6] mt-2 underline">
-                      Choisir une autre suggestion
-                    </button>
-                  ) : (
-                    <button onClick={() => setViewMode('setup')} className="text-sm text-gray-500 hover:text-[#8B5CF6] mt-2 underline">
-                      Retour au menu
-                    </button>
-                  )}
 
-                  <div className="flex justify-end gap-3 mt-6">
-                    <button 
-                      onClick={() => replies.length > 0 ? setViewMode('list') : setViewMode('setup')}
-                      className="px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
-                    >
+                  <div className="flex justify-end gap-3 mt-4">
+                    <button onClick={() => setIsEditing(false)} className="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 text-sm font-medium">
                       Annuler
                     </button>
                     <button 
-                      onClick={postReply}
-                      disabled={posting || !draftReply.trim()}
-                      className="px-6 py-2.5 bg-[#8B5CF6] hover:bg-[#7C3AED] text-white font-bold rounded-lg transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={() => postReply(responseText)} 
+                      disabled={posting || !responseText.trim()}
+                      className="px-6 py-2 bg-[#8B5CF6] hover:bg-[#7C3AED] text-white rounded-lg text-sm font-bold flex items-center space-x-2 disabled:opacity-50"
                     >
-                      {posting ? (
-                        <><span>Envoi...</span></>
-                      ) : (
+                      {posting ? "Envoi..." : (
                         <>
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                           <span>Valider la réponse</span>
                         </>
                       )}
                     </button>
                   </div>
                 </div>
-              )}
+              ) : (
+                /* === MODE CHOIX & GÉNÉRATION === */
+                <>
+                  {replies.length === 0 && (
+                    <div className="mb-6">
+                      <div className="flex items-center justify-between mb-3">
+                        <p className="text-sm font-medium text-gray-700">Choisir le ton</p>
+                        <Link href="/settings" className="text-xs text-purple-600 hover:text-purple-700">Paramètres →</Link>
+                      </div>
+                      
+                      <div className="grid grid-cols-3 gap-2">
+                        {[
+                          { value: "amical", icon: "😊", label: "Amical" },
+                          { value: "professionnel", icon: "💼", label: "Pro" },
+                          { value: "fun", icon: "🎉", label: "Fun" },
+                          { value: "educatif", icon: "📚", label: "Éducatif" },
+                          { value: "motivant", icon: "💪", label: "Motivant" },
+                          { value: "humoristique", icon: "😂", label: "Humour" },
+                        ].map((tone) => (
+                          <button
+                            key={tone.value}
+                            onClick={() => setSelectedTone(tone.value)}
+                            className={`${
+                              selectedTone === tone.value
+                                ? "bg-[#8B5CF6] text-white border-[#8B5CF6]"
+                                : "bg-white text-gray-700 border-gray-300 hover:border-purple-400"
+                            } border-2 px-3 py-2 rounded-lg transition-all font-medium text-sm flex items-center justify-center space-x-1`}
+                          >
+                            <span>{tone.icon}</span>
+                            <span>{tone.label}</span>
+                          </button>
+                        ))}
+                      </div>
 
+                      {customInstructions && (
+                        <div className="mt-3 bg-purple-50 border border-purple-200 rounded-lg p-3">
+                          <p className="text-xs text-purple-900"><span className="font-semibold">✨ Instructions :</span> {customInstructions}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {generating ? (
+                    <div className="text-center py-12">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B5CF6] mx-auto mb-4"></div>
+                      <p className="text-gray-600">Génération en cours...</p>
+                    </div>
+                  ) : replies.length > 0 ? (
+                    <div className="space-y-4">
+                      {replies.map((reply, index) => (
+                        <div
+                          key={index}
+                          onClick={() => startEditing(reply)}
+                          className="group border-2 border-gray-200 rounded-lg p-4 hover:border-[#8B5CF6] cursor-pointer transition-all relative bg-white"
+                        >
+                          <p className="text-gray-800 pr-8">{reply}</p>
+                          <div className="absolute top-4 right-4 text-gray-400 group-hover:text-[#8B5CF6]">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                          </div>
+                          <div className="mt-2 text-xs text-[#8B5CF6] font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                            Cliquez pour modifier
+                          </div>
+                        </div>
+                      ))}
+
+                      <button onClick={() => setReplies([])} className="w-full mt-4 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg font-medium transition-colors">
+                        🔄 Changer le ton et regénérer
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-3">
+                      {/* BOUTON ÉCRIRE SOI-MÊME */}
+                      <button
+                        onClick={() => startEditing("")}
+                        className="flex-1 flex items-center justify-center space-x-2 border-2 border-gray-300 text-gray-700 font-semibold py-3 rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-colors"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                        <span>Écrire soi-même</span>
+                      </button>
+
+                      {/* BOUTON IA */}
+                      <button
+                        onClick={generateReplies}
+                        disabled={!selectedTone}
+                        className="flex-[2] bg-[#8B5CF6] hover:bg-[#7C3AED] disabled:bg-gray-300 text-white font-semibold py-4 rounded-lg transition-all flex items-center justify-center space-x-2"
+                      >
+                        <span>✨</span>
+                        <span>Générer 3 suggestions</span>
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
 
             {/* Footer */}
-            {viewMode !== 'editor' && (
-              <div className="border-t px-6 py-4 bg-gray-50 rounded-b-2xl flex justify-between items-center">
-                <button
-                  onClick={closeModal}
-                  className="text-gray-600 hover:text-gray-800 font-medium"
-                >
-                  Fermer
-                </button>
-              </div>
-            )}
+            <div className="border-t px-6 py-4 bg-gray-50 rounded-b-2xl flex justify-between items-center">
+              <button onClick={closeModal} className="text-gray-600 hover:text-gray-800 font-medium">Fermer</button>
+            </div>
           </div>
         </div>
       )}

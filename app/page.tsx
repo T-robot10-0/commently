@@ -14,8 +14,8 @@ export default function Dashboard() {
   const [selectedComment, setSelectedComment] = useState<any>(null);
   
   // --- NOUVEAUX ÉTATS POUR L'ÉDITION ---
-  const [isEditing, setIsEditing] = useState(false);
-  const [responseText, setResponseText] = useState("");
+  const [viewMode, setViewMode] = useState<'setup' | 'list' | 'editor'>('setup');
+  const [draftReply, setDraftReply] = useState("");
   
   const [generating, setGenerating] = useState(false);
   const [posting, setPosting] = useState(false);
@@ -53,7 +53,7 @@ export default function Dashboard() {
   }
 
   // ====================================================================================
-  // 3. LANDING PAGE
+  // 3. LANDING PAGE (SCROLLBAR CLEAN) - Visible si NON CONNECTÉ
   // ====================================================================================
   if (status === "unauthenticated") {
     return (
@@ -89,6 +89,7 @@ export default function Dashboard() {
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            {/* Badge Groq */}
             <div className="inline-flex items-center space-x-2 bg-white/50 backdrop-blur-sm border border-purple-100 rounded-full px-4 py-1.5 mb-8 shadow-sm">
               <span className="flex h-2 w-2 relative">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
@@ -336,17 +337,12 @@ export default function Dashboard() {
   function openModal(comment: any) {
     setSelectedComment(comment);
     setReplies([]);
-    setIsEditing(false);
-    setResponseText(""); // Reset text
+    setViewMode('setup'); // On commence en mode config
     setSelectedTone(localStorage.getItem("defaultTone") || "amical");
     setCustomInstructions(localStorage.getItem("customInstructions") || "");
   }
 
-  function startEditing(text: string) {
-    setResponseText(text);
-    setIsEditing(true);
-  }
-
+  // 1. Générer
   async function generateReplies() {
     if (!selectedComment || !selectedTone) return;
     setGenerating(true);
@@ -363,6 +359,7 @@ export default function Dashboard() {
       const data = await response.json();
       if (data.replies) {
         setReplies(data.replies);
+        setViewMode('list'); // On passe en mode liste de suggestions
         setToast({ message: "✨ Réponses générées !", type: 'success' });
       }
     } catch (error) {
@@ -370,14 +367,22 @@ export default function Dashboard() {
     } finally { setGenerating(false); }
   }
 
-  async function postReply(textToPost: string) {
-    if (!selectedComment) return;
+  // 2. Commencer l'édition (Soit vide, soit avec une réponse IA)
+  // C'est ICI que ça se passe : on met le texte dans draftReply et on change le mode
+  function startEditing(text: string) {
+    setDraftReply(text);
+    setViewMode('editor'); // On passe en mode éditeur
+  }
+
+  // 3. Poster la réponse
+  async function postReply() {
+    if (!selectedComment || !draftReply) return; // On poste draftReply
     setPosting(true);
     try {
       const response = await fetch("/api/youtube/post-reply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ commentId: selectedComment.id, replyText: textToPost }),
+        body: JSON.stringify({ commentId: selectedComment.id, replyText: draftReply }),
       });
       const data = await response.json();
       if (data.success) {
@@ -394,8 +399,8 @@ export default function Dashboard() {
   function closeModal() {
     setSelectedComment(null);
     setReplies([]);
-    setIsEditing(false);
-    setResponseText("");
+    setDraftReply("");
+    setViewMode('setup');
   }
 
   const videos = getUniqueVideos(comments);
@@ -424,7 +429,7 @@ export default function Dashboard() {
         <nav className="flex-1 p-4 space-y-1">
           <Link href="/" className="flex items-center space-x-3 px-4 py-3 rounded-lg bg-purple-50 text-[#8B5CF6] font-medium relative">
             <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#8B5CF6] rounded-r"></div>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z" /></svg>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z" /></svg>
             <span>Dashboard</span>
           </Link>
           
@@ -443,6 +448,7 @@ export default function Dashboard() {
             </div>
           </div>
           <button onClick={() => signOut()} className="w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 font-medium">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
             <span>Déconnexion</span>
           </button>
         </div>
@@ -462,10 +468,8 @@ export default function Dashboard() {
         <div className="flex-1 overflow-y-auto">
           {videos.filter(video => video.title.toLowerCase().includes(searchQuery.toLowerCase())).map((video, index) => {
               const isActive = selectedVideo === video.title;
-              // === CORRECTIF : J'ai remis la logique de calcul urgentCount ici ===
               const videoComments = getCommentsForVideo(video.title);
               const urgentCount = videoComments.filter(c => getCommentCategory(c) === 'URGENT').length;
-              
               return (
                 <button key={index} onClick={() => setSelectedVideo(video.title)} className={`w-full p-4 border-b border-gray-100 hover:bg-gray-50 text-left transition-colors ${isActive ? 'bg-purple-50' : ''}`}>
                   <div className="flex space-x-3">
@@ -557,40 +561,48 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* === MODE ÉDITION === */}
-              {isEditing ? (
+              {/* === MODE ÉDITION (VUE FINALE AVANT ENVOI) === */}
+              {viewMode === 'editor' ? (
                 <div className="animate-fadeIn">
-                  <div className="flex justify-between items-center mb-3">
-                    <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">MODIFICATION EN COURS</p>
-                    <button onClick={() => setIsEditing(false)} className="text-xs text-purple-600 hover:underline">
-                      Retour aux choix
-                    </button>
-                  </div>
+                  <p className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">VOTRE RÉPONSE</p>
                   
-                  <div className="relative">
+                  {/* ZONE DE TEXTE STYLE SCREENSHOT */}
+                  <div className="border border-purple-300 rounded-xl p-1 overflow-hidden focus-within:ring-2 focus-within:ring-purple-500 transition-all">
                     <textarea
-                      value={responseText}
-                      onChange={(e) => setResponseText(e.target.value)}
-                      className="w-full h-32 p-4 border-2 border-[#8B5CF6] rounded-xl focus:outline-none text-gray-800 text-base shadow-sm resize-none"
+                      value={draftReply}
+                      onChange={(e) => setDraftReply(e.target.value)}
+                      className="w-full h-32 p-4 outline-none resize-none text-gray-800 text-base"
                       placeholder="Écrivez votre réponse ici..."
                       autoFocus
                     />
-                    <div className="absolute top-3 right-3 w-2 h-2 bg-[#8B5CF6] rounded-full animate-pulse"></div>
                   </div>
 
-                  <div className="flex justify-end gap-3 mt-4">
-                    <button onClick={() => setIsEditing(false)} className="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 text-sm font-medium">
+                  {/* BOUTONS STYLE SCREENSHOT */}
+                  <div className="flex justify-end gap-3 mt-4 items-center">
+                    {replies.length > 0 && (
+                      <button onClick={() => setViewMode('list')} className="mr-auto text-sm text-gray-500 hover:text-purple-600 underline">
+                        Retour aux suggestions
+                      </button>
+                    )}
+                    
+                    <button 
+                      onClick={() => replies.length > 0 ? setViewMode('list') : setViewMode('setup')}
+                      className="text-gray-500 hover:text-gray-700 font-medium px-4 py-2"
+                    >
                       Annuler
                     </button>
+                    
                     <button 
-                      onClick={() => postReply(responseText)} 
-                      disabled={posting || !responseText.trim()}
-                      className="px-6 py-2 bg-[#8B5CF6] hover:bg-[#7C3AED] text-white rounded-lg text-sm font-bold flex items-center space-x-2 disabled:opacity-50"
+                      onClick={postReply}
+                      disabled={posting || !draftReply.trim()}
+                      className="bg-[#111827] text-white hover:bg-black rounded-lg px-6 py-2.5 flex items-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                     >
-                      {posting ? "Envoi..." : (
+                      {posting ? (
+                        <span>Envoi...</span>
+                      ) : (
                         <>
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                          <span>Valider la réponse</span>
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                          <span>Envoyer</span>
                         </>
                       )}
                     </button>
@@ -599,6 +611,7 @@ export default function Dashboard() {
               ) : (
                 /* === MODE CHOIX & GÉNÉRATION === */
                 <>
+                  {/* Si on n'a pas encore généré */}
                   {replies.length === 0 && (
                     <div className="mb-6">
                       <div className="flex items-center justify-between mb-3">
@@ -638,13 +651,16 @@ export default function Dashboard() {
                     </div>
                   )}
 
+                  {/* Chargement */}
                   {generating ? (
                     <div className="text-center py-12">
                       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B5CF6] mx-auto mb-4"></div>
                       <p className="text-gray-600">Génération en cours...</p>
                     </div>
                   ) : replies.length > 0 ? (
+                    /* Liste des résultats IA */
                     <div className="space-y-4">
+                      <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Suggestions générées</p>
                       {replies.map((reply, index) => (
                         <div
                           key={index}
@@ -666,8 +682,8 @@ export default function Dashboard() {
                       </button>
                     </div>
                   ) : (
+                    /* Boutons d'action initiaux */
                     <div className="flex gap-3">
-                      {/* BOUTON ÉCRIRE SOI-MÊME */}
                       <button
                         onClick={() => startEditing("")}
                         className="flex-1 flex items-center justify-center space-x-2 border-2 border-gray-300 text-gray-700 font-semibold py-3 rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-colors"
@@ -676,7 +692,6 @@ export default function Dashboard() {
                         <span>Écrire soi-même</span>
                       </button>
 
-                      {/* BOUTON IA */}
                       <button
                         onClick={generateReplies}
                         disabled={!selectedTone}
@@ -691,10 +706,12 @@ export default function Dashboard() {
               )}
             </div>
 
-            {/* Footer */}
-            <div className="border-t px-6 py-4 bg-gray-50 rounded-b-2xl flex justify-between items-center">
-              <button onClick={closeModal} className="text-gray-600 hover:text-gray-800 font-medium">Fermer</button>
-            </div>
+            {/* Footer Modal (sauf en mode éditeur qui a ses propres boutons) */}
+            {viewMode !== 'editor' && (
+              <div className="border-t px-6 py-4 bg-gray-50 rounded-b-2xl flex justify-between items-center">
+                <button onClick={closeModal} className="text-gray-600 hover:text-gray-800 font-medium">Fermer</button>
+              </div>
+            )}
           </div>
         </div>
       )}

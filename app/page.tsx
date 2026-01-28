@@ -17,7 +17,7 @@ export default function Dashboard() {
   const [viewMode, setViewMode] = useState<'setup' | 'list' | 'editor'>('setup');
   const [draftReply, setDraftReply] = useState("");
   
-  // --- ÉTAT POUR LES COMMENTAIRES RÉPONDUS (Check visuel) ---
+  // --- ÉTAT POUR LES COMMENTAIRES RÉPONDUS (Persistent) ---
   const [repliedComments, setRepliedComments] = useState<Set<string>>(new Set());
 
   const [generating, setGenerating] = useState(false);
@@ -31,12 +31,13 @@ export default function Dashboard() {
   const [filterType, setFilterType] = useState<'all' | 'prioritaires' | 'normal' | 'spam'>('normal');
   const [searchQuery, setSearchQuery] = useState("");
 
-  // 1. GESTION SESSION
+  // 1. GESTION SESSION + CHARGEMENT SAUVEGARDES
   useEffect(() => {
     if (status === "authenticated") {
       fetchComments();
       loadSettings();
       loadLikedComments();
+      loadRepliedComments(); // Chargement de l'historique
     }
   }, [status]);
 
@@ -91,6 +92,7 @@ export default function Dashboard() {
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            {/* Badge Groq */}
             <div className="inline-flex items-center space-x-2 bg-white/50 backdrop-blur-sm border border-purple-100 rounded-full px-4 py-1.5 mb-8 shadow-sm">
               <span className="flex h-2 w-2 relative">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
@@ -271,6 +273,14 @@ export default function Dashboard() {
     } catch (error) { console.error(error); }
   }
 
+  // NOUVELLE FONCTION DE CHARGEMENT
+  function loadRepliedComments() {
+    try {
+      const storedReplies = localStorage.getItem("repliedComments");
+      if (storedReplies) setRepliedComments(new Set(JSON.parse(storedReplies)));
+    } catch (error) { console.error(error); }
+  }
+
   function loadSettings() {
     setSelectedTone(localStorage.getItem("defaultTone") || "amical");
     setCustomInstructions(localStorage.getItem("customInstructions") || "");
@@ -317,13 +327,23 @@ export default function Dashboard() {
   }
 
   function getFilteredComments(videoComments: any[]) {
-    return videoComments.filter(comment => {
+    // 1. On filtre d'abord selon le type (Tous, Urgent, Spam)
+    const filtered = videoComments.filter(comment => {
       const category = getCommentCategory(comment);
       if (filterType === 'all') return true;
       if (filterType === 'prioritaires') return category === 'URGENT';
       if (filterType === 'normal') return category === 'NORMAL';
       if (filterType === 'spam') return category === 'SPAM';
       return true;
+    });
+
+    // 2. On trie : Les NON RÉPONDUS d'abord, les RÉPONDUS à la fin
+    return filtered.sort((a, b) => {
+      const aReplied = repliedComments.has(a.id);
+      const bReplied = repliedComments.has(b.id);
+      
+      if (aReplied === bReplied) return 0; // Si même statut, on garde l'ordre de date
+      return aReplied ? 1 : -1; // Si A est répondu, il part à la fin (1)
     });
   }
 
@@ -382,8 +402,10 @@ export default function Dashboard() {
       if (data.success) {
         setToast({ message: "✅ Réponse postée !", type: 'success' });
         
-        // AJOUT : Marquer le commentaire comme répondu
-        setRepliedComments(prev => new Set(prev).add(selectedComment.id));
+        // --- MISE A JOUR ET SAUVEGARDE ---
+        const newReplied = new Set(repliedComments).add(selectedComment.id);
+        setRepliedComments(newReplied);
+        localStorage.setItem("repliedComments", JSON.stringify([...newReplied]));
         
         closeModal();
       } else {
@@ -403,7 +425,7 @@ export default function Dashboard() {
 
   const videos = getUniqueVideos(comments);
   const selectedVideoComments = selectedVideo ? getCommentsForVideo(selectedVideo) : [];
-  const filteredComments = getFilteredComments(selectedVideoComments);
+  const filteredComments = getFilteredComments(selectedVideoComments); // Ce tableau est maintenant trié
   const countByCategory = {
     prioritaires: selectedVideoComments.filter(c => getCommentCategory(c) === 'URGENT').length,
     normal: selectedVideoComments.filter(c => getCommentCategory(c) === 'NORMAL').length,
@@ -427,7 +449,7 @@ export default function Dashboard() {
         <nav className="flex-1 p-4 space-y-1">
           <Link href="/" className="flex items-center space-x-3 px-4 py-3 rounded-lg bg-purple-50 text-[#8B5CF6] font-medium relative">
             <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#8B5CF6] rounded-r"></div>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z" /></svg>
             <span>Dashboard</span>
           </Link>
           

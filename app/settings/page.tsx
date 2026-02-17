@@ -11,15 +11,51 @@ export default function SettingsPage() {
   const [defaultTone, setDefaultTone] = useState("amical");
   const [customInstructions, setCustomInstructions] = useState("");
   const [saved, setSaved] = useState(false);
+  type UiLang = "fr" | "en";
+  const [uiLang, setUiLang] = useState<UiLang>("fr");
+
+  const uiText = {
+    fr: {
+      settings: "Parametres",
+      signOut: "Deconnexion",
+      aiSettings: "Parametres de l'IA",
+      defaultTone: "Ton par defaut",
+      customInstructions: "Instructions personnalisees (Prompt Systeme)",
+      save: "Sauvegarder",
+      saved: "Sauvegarde !",
+      language: "Langue de l'app",
+    },
+    en: {
+      settings: "Settings",
+      signOut: "Sign out",
+      aiSettings: "AI Settings",
+      defaultTone: "Default tone",
+      customInstructions: "Custom instructions (System prompt)",
+      save: "Save",
+      saved: "Saved!",
+      language: "App language",
+    },
+  } as const;
+
+  const toneLabels: Record<string, { fr: string; en: string }> = {
+    amical: { fr: "Amical", en: "Friendly" },
+    professionnel: { fr: "Professionnel", en: "Professional" },
+    fun: { fr: "Fun", en: "Fun" },
+    educatif: { fr: "Educatif", en: "Educational" },
+    motivant: { fr: "Motivant", en: "Motivating" },
+    humoristique: { fr: "Humoristique", en: "Humorous" },
+  };
+
+  const t = (key: keyof typeof uiText["fr"]) => uiText[uiLang][key];
 
   // Liste complète des tons
   const tones = [
-    { value: "amical", label: "Amical" },
-    { value: "professionnel", label: "Professionnel" },
-    { value: "fun", label: "Fun" },
-    { value: "educatif", label: "Éducatif" },
-    { value: "motivant", label: "Motivant" },
-    { value: "humoristique", label: "Humoristique" },
+    { value: "amical", label: toneLabels.amical[uiLang] },
+    { value: "professionnel", label: toneLabels.professionnel[uiLang] },
+    { value: "fun", label: toneLabels.fun[uiLang] },
+    { value: "educatif", label: toneLabels.educatif[uiLang] },
+    { value: "motivant", label: toneLabels.motivant[uiLang] },
+    { value: "humoristique", label: toneLabels.humoristique[uiLang] },
   ];
 
   useEffect(() => {
@@ -28,6 +64,20 @@ export default function SettingsPage() {
     setDefaultTone(savedTone);
     setCustomInstructions(savedInstructions);
   }, []);
+
+  useEffect(() => {
+    const savedLang = localStorage.getItem("uiLang");
+    if (savedLang === "fr" || savedLang === "en") {
+      setUiLang(savedLang);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("uiLang", uiLang);
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = uiLang;
+    }
+  }, [uiLang]);
 
   const handleSave = () => {
     localStorage.setItem("defaultTone", defaultTone);
@@ -57,7 +107,7 @@ export default function SettingsPage() {
           <Link href="/settings" className="flex items-center space-x-3 px-4 py-3 rounded-lg bg-purple-50 text-[#8B5CF6] font-medium relative">
              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#8B5CF6] rounded-r"></div>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-            <span>Paramètres</span>
+            <span>{t("settings")}</span>
           </Link>
         </nav>
         
@@ -70,17 +120,34 @@ export default function SettingsPage() {
             </div>
           </div>
           <button onClick={() => signOut()} className="w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 font-medium">
-            <span>Déconnexion</span>
+            <span>{t("signOut")}</span>
           </button>
         </div>
       </aside>
 
       <div className="flex-1 max-w-2xl mx-auto w-full p-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-8">⚙️ Paramètres de l'IA</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-8">⚙️ {t("aiSettings")}</h1>
         
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 space-y-8">
           <div>
-            <label className="block text-sm font-bold text-gray-900 mb-2">Ton par défaut</label>
+            <label className="block text-sm font-bold text-gray-900 mb-2">{t("language")}</label>
+            <div className="inline-flex items-center rounded-full border border-gray-200 bg-white p-1 text-xs font-semibold">
+              <button
+                onClick={() => setUiLang("fr")}
+                className={`px-3 py-1 rounded-full ${uiLang === "fr" ? "bg-gray-900 text-white" : "text-gray-600 hover:text-gray-900"}`}
+              >
+                FR
+              </button>
+              <button
+                onClick={() => setUiLang("en")}
+                className={`px-3 py-1 rounded-full ${uiLang === "en" ? "bg-gray-900 text-white" : "text-gray-600 hover:text-gray-900"}`}
+              >
+                EN
+              </button>
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-2">{t("defaultTone")}</label>
             <div className="grid grid-cols-3 gap-3">
               {tones.map((tone) => (
                 <button
@@ -97,19 +164,19 @@ export default function SettingsPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-gray-900 mb-2">Instructions personnalisées (Prompt Système)</label>
+            <label className="block text-sm font-bold text-gray-900 mb-2">{t("customInstructions")}</label>
             <textarea
               value={customInstructions}
               onChange={(e) => setCustomInstructions(e.target.value)}
-              placeholder="Ex: Signe toujours par 'L'équipe Squeezie'."
+              placeholder={uiLang === "en" ? "e.g. Always sign with 'Team Squeezie'." : "Ex: Signe toujours par 'L'equipe Squeezie'."}
               className="w-full h-32 px-4 py-3 bg-white text-gray-900 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#8B5CF6] outline-none resize-none placeholder-gray-500"
             />
           </div>
 
           <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
-            {saved ? <span className="text-green-600 font-medium animate-fadeIn">✅ Sauvegardé !</span> : <span></span>}
+            {saved ? <span className="text-green-600 font-medium animate-fadeIn">✅ {t("saved")}</span> : <span></span>}
             <button onClick={handleSave} className="px-6 py-2 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800">
-              Sauvegarder
+              {t("save")}
             </button>
           </div>
         </div>

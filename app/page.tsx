@@ -32,6 +32,64 @@ export default function Dashboard() {
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<'all' | 'prioritaires' | 'normal' | 'spam'>('normal');
   const [searchQuery, setSearchQuery] = useState("");
+  type UiLang = "fr" | "en";
+  const [uiLang, setUiLang] = useState<UiLang>("fr");
+
+  const uiText = {
+    fr: {
+      signIn: "Connexion",
+      signInYoutube: "Connexion avec YouTube",
+      connectYoutube: "Se connecter avec YouTube",
+      signOut: "Deconnexion",
+      generateReply: "Generer reponse",
+      filterPriorities: "Prioritaires",
+      filterAll: "Tous",
+      filterNormal: "Normal",
+      filterSpam: "Spam",
+      modalBack: "Retour aux suggestions",
+      modalCancel: "Annuler",
+      modalSend: "Envoyer",
+      modalSending: "Envoi...",
+      modalChooseTone: "Choisir le ton",
+      modalSettings: "Parametres ->",
+      modalChangeTone: "Changer le ton et regenerer",
+      modalWriteSelf: "Ecrire soi-meme",
+      modalGenerate3: "Generer 3 suggestions",
+      modalClose: "Fermer",
+    },
+    en: {
+      signIn: "Sign in",
+      signInYoutube: "Sign in with YouTube",
+      connectYoutube: "Connect with YouTube",
+      signOut: "Sign out",
+      generateReply: "Generate reply",
+      filterPriorities: "Priority",
+      filterAll: "All",
+      filterNormal: "Normal",
+      filterSpam: "Spam",
+      modalBack: "Back to suggestions",
+      modalCancel: "Cancel",
+      modalSend: "Send",
+      modalSending: "Sending...",
+      modalChooseTone: "Choose tone",
+      modalSettings: "Settings ->",
+      modalChangeTone: "Change tone and regenerate",
+      modalWriteSelf: "Write manually",
+      modalGenerate3: "Generate 3 suggestions",
+      modalClose: "Close",
+    },
+  } as const;
+
+  const toneLabels: Record<string, { fr: string; en: string }> = {
+    amical: { fr: "Amical", en: "Friendly" },
+    professionnel: { fr: "Pro", en: "Professional" },
+    fun: { fr: "Fun", en: "Fun" },
+    educatif: { fr: "Educatif", en: "Educational" },
+    motivant: { fr: "Motivant", en: "Motivating" },
+    humoristique: { fr: "Humour", en: "Humorous" },
+  };
+
+  const t = (key: keyof typeof uiText["fr"]) => uiText[uiLang][key];
 
   // 1. GESTION SESSION
   useEffect(() => {
@@ -49,6 +107,20 @@ export default function Dashboard() {
       return () => clearTimeout(timer);
     }
   }, [toast]);
+
+  useEffect(() => {
+    const savedLang = localStorage.getItem("uiLang");
+    if (savedLang === "fr" || savedLang === "en") {
+      setUiLang(savedLang);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("uiLang", uiLang);
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = uiLang;
+    }
+  }, [uiLang]);
 
   if (status === "loading") {
     return (
@@ -75,11 +147,25 @@ export default function Dashboard() {
                 <span className="text-gray-900 font-bold text-xl tracking-tight">Commently</span>
               </div>
               <div className="flex items-center gap-4">
+                <div className="inline-flex items-center rounded-full border border-gray-200 bg-white p-1 text-xs font-semibold">
+                  <button
+                    onClick={() => setUiLang("fr")}
+                    className={`px-2 py-1 rounded-full ${uiLang === "fr" ? "bg-gray-900 text-white" : "text-gray-600 hover:text-gray-900"}`}
+                  >
+                    FR
+                  </button>
+                  <button
+                    onClick={() => setUiLang("en")}
+                    className={`px-2 py-1 rounded-full ${uiLang === "en" ? "bg-gray-900 text-white" : "text-gray-600 hover:text-gray-900"}`}
+                  >
+                    EN
+                  </button>
+                </div>
                 <button 
                   onClick={() => signIn("google")}
                   className="bg-gray-900 hover:bg-black text-white px-5 py-2 rounded-full text-sm font-bold transition-all hover:scale-105 shadow-md"
                 >
-                  Connexion
+                  {t("signIn")}
                 </button>
               </div>
             </div>
@@ -120,7 +206,7 @@ export default function Dashboard() {
                 className="flex items-center gap-3 bg-[#FF0000] text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-[#cc0000] transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 w-full sm:w-auto justify-center"
               >
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                <span>Connexion avec YouTube</span>
+                <span>{t("signInYoutube")}</span>
               </button>
               
               <div className="text-sm text-gray-500 font-medium mt-2">
@@ -240,7 +326,7 @@ export default function Dashboard() {
               onClick={() => signIn("google")}
               className="bg-gray-900 hover:bg-black text-white px-10 py-5 rounded-full font-bold text-xl transition-all hover:scale-105 shadow-xl hover:shadow-2xl"
             >
-              Se connecter avec YouTube
+              {t("connectYoutube")}
             </button>
           </div>
         </section>
@@ -473,9 +559,23 @@ export default function Dashboard() {
               <p className="text-xs text-gray-500">Pro Plan</p>
             </div>
           </div>
+          <div className="inline-flex items-center rounded-full border border-gray-200 bg-white p-1 text-xs font-semibold w-fit">
+            <button
+              onClick={() => setUiLang("fr")}
+              className={`px-2 py-1 rounded-full ${uiLang === "fr" ? "bg-gray-900 text-white" : "text-gray-600 hover:text-gray-900"}`}
+            >
+              FR
+            </button>
+            <button
+              onClick={() => setUiLang("en")}
+              className={`px-2 py-1 rounded-full ${uiLang === "en" ? "bg-gray-900 text-white" : "text-gray-600 hover:text-gray-900"}`}
+            >
+              EN
+            </button>
+          </div>
           <button onClick={() => signOut()} className="w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 font-medium">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-            <span>Déconnexion</span>
+            <span>{t("signOut")}</span>
           </button>
         </div>
       </aside>
@@ -523,10 +623,10 @@ export default function Dashboard() {
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                <button onClick={() => setFilterType('prioritaires')} className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${filterType === 'prioritaires' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}><span>Prioritaires {countByCategory.prioritaires}</span></button>
-                <button onClick={() => setFilterType('all')} className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${filterType === 'all' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>Tous {countByCategory.all}</button>
-                <button onClick={() => setFilterType('normal')} className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${filterType === 'normal' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}><span>Normal {countByCategory.normal}</span></button>
-                <button onClick={() => setFilterType('spam')} className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${filterType === 'spam' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>Spam {countByCategory.spam}</button>
+                <button onClick={() => setFilterType('prioritaires')} className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${filterType === 'prioritaires' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}><span>{t("filterPriorities")} {countByCategory.prioritaires}</span></button>
+                <button onClick={() => setFilterType('all')} className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${filterType === 'all' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>{t("filterAll")} {countByCategory.all}</button>
+                <button onClick={() => setFilterType('normal')} className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${filterType === 'normal' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}><span>{t("filterNormal")} {countByCategory.normal}</span></button>
+                <button onClick={() => setFilterType('spam')} className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${filterType === 'spam' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>{t("filterSpam")} {countByCategory.spam}</button>
               </div>
             </div>
 
@@ -577,7 +677,7 @@ export default function Dashboard() {
                           <span>Répondu</span>
                         </div>
                       ) : (
-                        <button onClick={() => openModal(comment)} className="flex items-center space-x-2 px-4 py-2 bg-[#8B5CF6] text-white rounded-lg hover:bg-[#7C3AED] transition-colors text-sm font-medium"><span>✨ Générer réponse</span></button>
+                        <button onClick={() => openModal(comment)} className="flex items-center space-x-2 px-4 py-2 bg-[#8B5CF6] text-white rounded-lg hover:bg-[#7C3AED] transition-colors text-sm font-medium"><span>✨ {t("generateReply")}</span></button>
                       )}
                     </div>
                   </div>
@@ -635,7 +735,7 @@ export default function Dashboard() {
                   <div className="flex justify-end gap-3 mt-4 items-center">
                     {replies.length > 0 && (
                       <button onClick={() => setViewMode('list')} className="mr-auto text-sm text-gray-500 hover:text-purple-600 underline">
-                        Retour aux suggestions
+                        {t("modalBack")}
                       </button>
                     )}
                     
@@ -643,7 +743,7 @@ export default function Dashboard() {
                       onClick={() => replies.length > 0 ? setViewMode('list') : setViewMode('setup')}
                       className="text-gray-500 hover:text-gray-700 font-medium px-4 py-2"
                     >
-                      Annuler
+                      {t("modalCancel")}
                     </button>
                     
                     <button 
@@ -652,11 +752,11 @@ export default function Dashboard() {
                       className="bg-[#111827] text-white hover:bg-black rounded-lg px-6 py-2.5 flex items-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                     >
                       {posting ? (
-                        <span>Envoi...</span>
+                        <span>{t("modalSending")}</span>
                       ) : (
                         <>
                           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-                          <span>Envoyer</span>
+                          <span>{t("modalSend")}</span>
                         </>
                       )}
                     </button>
@@ -669,18 +769,18 @@ export default function Dashboard() {
                   {replies.length === 0 && (
                     <div className="mb-6">
                       <div className="flex items-center justify-between mb-3">
-                        <p className="text-sm font-medium text-gray-700">Choisir le ton</p>
-                        <Link href="/settings" className="text-xs text-purple-600 hover:text-purple-700">Paramètres →</Link>
+                        <p className="text-sm font-medium text-gray-700">{t("modalChooseTone")}</p>
+                        <Link href="/settings" className="text-xs text-purple-600 hover:text-purple-700">{t("modalSettings")}</Link>
                       </div>
                       
                       <div className="grid grid-cols-3 gap-2">
                         {[
-                          { value: "amical", icon: "😊", label: "Amical" },
-                          { value: "professionnel", icon: "💼", label: "Pro" },
-                          { value: "fun", icon: "🎉", label: "Fun" },
-                          { value: "educatif", icon: "📚", label: "Éducatif" },
-                          { value: "motivant", icon: "💪", label: "Motivant" },
-                          { value: "humoristique", icon: "😂", label: "Humour" },
+                          { value: "amical", icon: "😊", label: toneLabels.amical[uiLang] },
+                          { value: "professionnel", icon: "💼", label: toneLabels.professionnel[uiLang] },
+                          { value: "fun", icon: "🎉", label: toneLabels.fun[uiLang] },
+                          { value: "educatif", icon: "📚", label: toneLabels.educatif[uiLang] },
+                          { value: "motivant", icon: "💪", label: toneLabels.motivant[uiLang] },
+                          { value: "humoristique", icon: "😂", label: toneLabels.humoristique[uiLang] },
                         ].map((tone) => (
                           <button
                             key={tone.value}
@@ -732,7 +832,7 @@ export default function Dashboard() {
                       ))}
 
                       <button onClick={() => setReplies([])} className="w-full mt-4 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg font-medium transition-colors">
-                        🔄 Changer le ton et regénérer
+                        🔄 {t("modalChangeTone")}
                       </button>
                     </div>
                   ) : (
@@ -743,7 +843,7 @@ export default function Dashboard() {
                         className="flex-1 flex items-center justify-center space-x-2 border-2 border-gray-300 text-gray-700 font-semibold py-3 rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-colors"
                       >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                        <span>Écrire soi-même</span>
+                        <span>{t("modalWriteSelf")}</span>
                       </button>
 
                       <button
@@ -752,7 +852,7 @@ export default function Dashboard() {
                         className="flex-[2] bg-[#8B5CF6] hover:bg-[#7C3AED] disabled:bg-gray-300 text-white font-semibold py-4 rounded-lg transition-all flex items-center justify-center space-x-2"
                       >
                         <span>✨</span>
-                        <span>Générer 3 suggestions</span>
+                        <span>{t("modalGenerate3")}</span>
                       </button>
                     </div>
                   )}
@@ -763,7 +863,7 @@ export default function Dashboard() {
             {/* Footer Modal */}
             {viewMode !== 'editor' && (
               <div className="border-t px-6 py-4 bg-gray-50 rounded-b-2xl flex justify-between items-center">
-                <button onClick={closeModal} className="text-gray-600 hover:text-gray-800 font-medium">Fermer</button>
+                <button onClick={closeModal} className="text-gray-600 hover:text-gray-800 font-medium">{t("modalClose")}</button>
               </div>
             )}
           </div>

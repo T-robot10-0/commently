@@ -9,29 +9,36 @@ export async function POST(req: NextRequest) {
   try {
     const { comment_text, tone, custom_instructions } = await req.json();
 
-    const tonePrompts: Record<string, string> = {
-  amical: "chaleureux, sympathique et personnel",
-  professionnel: "poli, clair et professionnel",
-  fun: "amusant, dynamique avec des emojis",
-  educatif: "pédagogique, informatif et clair",
-  motivant: "encourageant, énergique et positif",
-  humoristique: "drôle, léger avec de l'humour",
-};
+    const tonePrompts: Record<string, { fr: string; en: string }> = {
+      amical: { fr: "chaleureux, sympathique et personnel", en: "warm, friendly and personal" },
+      professionnel: { fr: "poli, clair et professionnel", en: "polite, clear and professional" },
+      fun: { fr: "amusant, dynamique avec des emojis", en: "playful, energetic with emojis" },
+      educatif: { fr: "pédagogique, informatif et clair", en: "educational, informative and clear" },
+      motivant: { fr: "encourageant, énergique et positif", en: "encouraging, energetic and positive" },
+      humoristique: { fr: "drôle, léger avec de l'humour", en: "light and humorous" },
+    };
+
+    const toneFr = tonePrompts[tone]?.fr || "naturel";
+    const toneEn = tonePrompts[tone]?.en || "natural";
 
     const completion = await groq.chat.completions.create({
       messages: [
         {
           role: "user",
-          content: `Génère 3 réponses COURTES (2-3 phrases max) à ce commentaire YouTube.
+          content: `Detect the language of the comment. If it is English, respond in English. Otherwise respond in French.
+Use the tone that matches the response language.
+Tone (FR): ${toneFr}
+Tone (EN): ${toneEn}
 
-Commentaire : "${comment_text}"
-Ton : ${tonePrompts[tone] || "naturel"}
-${custom_instructions ? `Instructions : ${custom_instructions}` : ""}
+Generate 3 SHORT replies (2-3 sentences max) to this YouTube comment.
 
-Format EXACT (numérotées) :
-1. [réponse 1]
-2. [réponse 2]
-3. [réponse 3]`,
+Comment: "${comment_text}"
+${custom_instructions ? `Instructions: ${custom_instructions}` : ""}
+
+EXACT format (numbered):
+1. [reply 1]
+2. [reply 2]
+3. [reply 3]`,
         },
       ],
       model: "llama-3.3-70b-versatile",

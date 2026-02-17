@@ -23,6 +23,60 @@ export default function Dashboard() {
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<'all' | 'prioritaires' | 'normal' | 'spam'>('normal');
   const [searchQuery, setSearchQuery] = useState("");
+  type UiLang = "fr" | "en";
+  const [uiLang, setUiLang] = useState<UiLang>("fr");
+
+  const uiText = {
+    fr: {
+      automation: "Automatisation",
+      settings: "Parametres",
+      signOut: "Deconnexion",
+      filterPriorities: "Prioritaires",
+      filterAll: "Tous",
+      filterNormal: "Normal",
+      filterSpam: "Spam",
+      hide: "Masquer",
+      generateReply: "Generer reponse",
+      modalChooseTone: "Choisir le ton",
+      modalSettings: "Parametres ->",
+      copy: "Copier",
+      post: "Poster",
+      posting: "Publication...",
+      changeTone: "Changer le ton et regenerer",
+      generate3: "Generer 3 suggestions",
+      close: "Fermer",
+    },
+    en: {
+      automation: "Automation",
+      settings: "Settings",
+      signOut: "Sign out",
+      filterPriorities: "Priority",
+      filterAll: "All",
+      filterNormal: "Normal",
+      filterSpam: "Spam",
+      hide: "Hide",
+      generateReply: "Generate reply",
+      modalChooseTone: "Choose tone",
+      modalSettings: "Settings ->",
+      copy: "Copy",
+      post: "Post",
+      posting: "Posting...",
+      changeTone: "Change tone and regenerate",
+      generate3: "Generate 3 suggestions",
+      close: "Close",
+    },
+  } as const;
+
+  const toneLabels: Record<string, { fr: string; en: string }> = {
+    amical: { fr: "Amical", en: "Friendly" },
+    professionnel: { fr: "Professionnel", en: "Professional" },
+    fun: { fr: "Fun", en: "Fun" },
+    educatif: { fr: "Educatif", en: "Educational" },
+    motivant: { fr: "Motivant", en: "Motivating" },
+    humoristique: { fr: "Humoristique", en: "Humorous" },
+  };
+
+  const t = (key: keyof typeof uiText["fr"]) => uiText[uiLang][key];
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -37,6 +91,20 @@ export default function Dashboard() {
       loadLikedComments();
     }
   }, [session]);
+
+  useEffect(() => {
+    const savedLang = localStorage.getItem("uiLang");
+    if (savedLang === "fr" || savedLang === "en") {
+      setUiLang(savedLang);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("uiLang", uiLang);
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = uiLang;
+    }
+  }, [uiLang]);
   
   function loadLikedComments() {
     try {
@@ -289,7 +357,7 @@ export default function Dashboard() {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
-            <span>Automatisation</span>
+            <span>{t("automation")}</span>
           </button>
           
           <Link
@@ -300,7 +368,7 @@ export default function Dashboard() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <span>Paramètres</span>
+            <span>{t("settings")}</span>
           </Link>
         </nav>
 
@@ -320,6 +388,21 @@ export default function Dashboard() {
             </div>
           </div>
           
+          <div className="inline-flex items-center rounded-full border border-gray-200 bg-white p-1 text-xs font-semibold w-fit">
+            <button
+              onClick={() => setUiLang("fr")}
+              className={`px-2 py-1 rounded-full ${uiLang === "fr" ? "bg-gray-900 text-white" : "text-gray-600 hover:text-gray-900"}`}
+            >
+              FR
+            </button>
+            <button
+              onClick={() => setUiLang("en")}
+              className={`px-2 py-1 rounded-full ${uiLang === "en" ? "bg-gray-900 text-white" : "text-gray-600 hover:text-gray-900"}`}
+            >
+              EN
+            </button>
+          </div>
+          
           <button
             onClick={() => signOut({ callbackUrl: "/" })}
             className="w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 font-medium"
@@ -327,7 +410,7 @@ export default function Dashboard() {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
-            <span>Déconnexion</span>
+            <span>{t("signOut")}</span>
           </button>
         </div>
       </aside>
@@ -449,7 +532,7 @@ export default function Dashboard() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
                   </svg>
-                  <span>Prioritaires {countByCategory.prioritaires}</span>
+                  <span>{t("filterPriorities")} {countByCategory.prioritaires}</span>
                 </button>
                 
                 <button
@@ -460,7 +543,7 @@ export default function Dashboard() {
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   }`}
                 >
-                  Tous {countByCategory.all}
+                  {t("filterAll")} {countByCategory.all}
                 </button>
                 
                 <button
@@ -474,7 +557,7 @@ export default function Dashboard() {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" />
                   </svg>
-                  <span>Normal {countByCategory.normal}</span>
+                  <span>{t("filterNormal")} {countByCategory.normal}</span>
                 </button>
                 
                 <button
@@ -485,7 +568,7 @@ export default function Dashboard() {
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   }`}
                 >
-                  Spam {countByCategory.spam}
+                  {t("filterSpam")} {countByCategory.spam}
                 </button>
               </div>
             </div>
@@ -572,7 +655,7 @@ export default function Dashboard() {
                       
                       <div className="flex items-center space-x-3">
                         <button className="text-sm text-gray-600 hover:text-gray-900">
-                          Masquer
+                          {t("hide")}
                         </button>
                         <button
                           onClick={() => openModal(comment)}
@@ -581,7 +664,7 @@ export default function Dashboard() {
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                           </svg>
-                          <span>Générer réponse</span>
+                          <span>{t("generateReply")}</span>
                         </button>
                       </div>
                     </div>
@@ -648,23 +731,23 @@ export default function Dashboard() {
               {replies.length === 0 && (
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-3">
-                    <p className="text-sm font-medium text-gray-700">Choisir le ton</p>
+                    <p className="text-sm font-medium text-gray-700">{t("modalChooseTone")}</p>
                     <Link
                       href="/settings"
                       className="text-xs text-purple-600 hover:text-purple-700"
                     >
-                      Paramètres →
+                      {t("modalSettings")}
                     </Link>
                   </div>
                   
                   <div className="grid grid-cols-3 gap-2">
                     {[
-                      { value: "amical", icon: "😊", label: "Amical" },
-                      { value: "professionnel", icon: "💼", label: "Professionnel" },
-                      { value: "fun", icon: "🎉", label: "Fun" },
-                      { value: "educatif", icon: "📚", label: "Éducatif" },
-                      { value: "motivant", icon: "💪", label: "Motivant" },
-                      { value: "humoristique", icon: "😂", label: "Humoristique" },
+                      { value: "amical", icon: "😊", label: toneLabels.amical[uiLang] },
+                      { value: "professionnel", icon: "💼", label: toneLabels.professionnel[uiLang] },
+                      { value: "fun", icon: "🎉", label: toneLabels.fun[uiLang] },
+                      { value: "educatif", icon: "📚", label: toneLabels.educatif[uiLang] },
+                      { value: "motivant", icon: "💪", label: toneLabels.motivant[uiLang] },
+                      { value: "humoristique", icon: "😂", label: toneLabels.humoristique[uiLang] },
                     ].map((tone) => (
                       <button
                         key={tone.value}
@@ -716,14 +799,14 @@ export default function Dashboard() {
                           }}
                           className="text-blue-600 hover:text-blue-700 text-sm font-medium px-3 py-1"
                         >
-                          📋 Copier
+                          📋 {t("copy")}
                         </button>
                         <button
                           onClick={() => postReply(reply)}
                           disabled={posting}
                           className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-4 py-1 rounded-lg text-sm font-medium transition-colors"
                         >
-                          {posting ? "Publication..." : "✅ Poster"}
+                          {posting ? t("posting") : `✅ ${t("post")}`}
                         </button>
                       </div>
                     </div>
@@ -733,7 +816,7 @@ export default function Dashboard() {
                     onClick={() => setReplies([])}
                     className="w-full mt-4 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg font-medium transition-colors"
                   >
-                    🔄 Changer le ton et regénérer
+                    🔄 {t("changeTone")}
                   </button>
                 </div>
               ) : (
@@ -743,7 +826,7 @@ export default function Dashboard() {
                   className="w-full bg-[#8B5CF6] hover:bg-[#7C3AED] disabled:bg-gray-300 text-white font-semibold py-4 rounded-lg transition-all flex items-center justify-center space-x-2"
                 >
                   <span>✨</span>
-                  <span>Générer 3 suggestions</span>
+                  <span>{t("generate3")}</span>
                 </button>
               )}
             </div>
@@ -754,7 +837,7 @@ export default function Dashboard() {
                 onClick={closeModal}
                 className="text-gray-600 hover:text-gray-800 font-medium"
               >
-                Fermer
+                {t("close")}
               </button>
               {replies.length > 0 && !posting && (
                 <p className="text-sm text-gray-500">

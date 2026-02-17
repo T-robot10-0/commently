@@ -5,12 +5,7 @@ import GoogleProvider from "next-auth/providers/google";
 // J'ai corrigé la syntaxe (fermeture du tableau) et nettoyé les commentaires
 const ALLOWED_EMAILS = [
   "t0robot10@gmail.com",
-  "contact@jongregor.com",
-  "lenversdudecode@gmail.com",
-  "a.quatre44@gmail.com",
-  "contact@ytbusiness.fr",
-  "william.eliezer.contact@gmail.com",
-  "commently.contact@gmail.com"
+  "aitooltip@gmail.com",
 ];
 
 // 2. ACTIVER LE BLOCAGE (Met sur 'false' si tu veux ouvrir à tout le monde plus tard)

@@ -56,6 +56,53 @@ export default function Dashboard() {
       modalWriteSelf: "Ecrire soi-meme",
       modalGenerate3: "Generer 3 suggestions",
       modalClose: "Fermer",
+      poweredBy: "Propulse par Groq",
+      heroTitleA: "Ne manquez plus jamais",
+      heroTitleB: "une reponse.",
+      heroSubtitle: "Commently analyse vos commentaires YouTube et genere 3 suggestions de reponse instantanement grace a l'IA.",
+      viaYoutubeApi: "Via l'API Officielle YouTube",
+      simplifiedInterface: "Interface Simplifiee",
+      commentReceived: "Commentaire recu",
+      aiSuggestions: "Suggestions IA",
+      toneLabel: "Ton : Amical",
+      compatibleWith: "Compatible avec",
+      simplicityTitle: "La simplicite avant tout.",
+      simplicitySubtitle: "Pas de fonctionnalites inutiles. Juste ce qu'il faut pour repondre plus vite.",
+      feature1Title: "3 Suggestions IA",
+      feature1Desc: "Pour chaque commentaire, l'IA vous propose 3 reponses differentes. Cliquez, modifiez, postez.",
+      feature2Title: "6 Tons de Reponse",
+      feature2Desc: "Choisissez le style : Amical, Professionnel, Fun, Educatif, Motivant ou Humoristique.",
+      feature3Title: "Gain de Temps",
+      feature3Desc: "Evitez de taper les memes reponses encore et encore. L'IA redige la base pour vous.",
+      ctaTitle: "Gagnez du temps des maintenant",
+      footerTagline: "Gere tes commentaires YouTube avec l'IA",
+      contactLabel: "Contact",
+      myVideos: "Mes Videos",
+      searchVideo: "Chercher une video...",
+      selectVideo: "Selectionnez une video",
+      commentsCount: "Commentaires",
+      replied: "Repondu",
+      aiReplyGenerator: "Generateur de reponse IA",
+      yourReply: "Votre reponse",
+      generating: "Generation en cours...",
+      generatedSuggestions: "Suggestions generees",
+      clickToEdit: "Cliquez pour modifier",
+      writeHere: "Ecrivez votre reponse ici...",
+      writeSelf: "Ecrire soi-meme",
+      changeTone: "Changer le ton et regenerer",
+      selectVideoHint: "Selectionnez une video",
+      settingsNav: "Parametres",
+      toastRepliesGenerated: "Reponses generees !",
+      toastGenerationError: "Erreur generation",
+      toastReplyPosted: "Reponse postee !",
+      toastError: "Erreur",
+      toastNetworkError: "Erreur reseau",
+      mockAuthor: "Abonne Fidele",
+      mockComment: "Incroyable cette video ! J'adore ton energie. Ca sort quand la suite ?",
+      mockReply1: "Merci beaucoup ! La suite arrive la semaine prochaine, reste connecte !",
+      mockReply2: "Trop sympa, merci ! On bosse dur sur l'episode 2.",
+      mockReply3: "Merci a toi d'etre la ! Rendez-vous mardi prochain",
+      proPlan: "Plan Pro",
     },
     en: {
       signIn: "Sign in",
@@ -77,6 +124,53 @@ export default function Dashboard() {
       modalWriteSelf: "Write manually",
       modalGenerate3: "Generate 3 suggestions",
       modalClose: "Close",
+      poweredBy: "Powered by Groq",
+      heroTitleA: "Never miss",
+      heroTitleB: "a reply.",
+      heroSubtitle: "Commently analyzes your YouTube comments and generates 3 instant reply suggestions with AI.",
+      viaYoutubeApi: "Via the Official YouTube API",
+      simplifiedInterface: "Simplified Interface",
+      commentReceived: "Comment received",
+      aiSuggestions: "AI Suggestions",
+      toneLabel: "Tone: Friendly",
+      compatibleWith: "Compatible with",
+      simplicityTitle: "Simplicity first.",
+      simplicitySubtitle: "No useless features. Just what you need to reply faster.",
+      feature1Title: "3 AI Suggestions",
+      feature1Desc: "For each comment, AI proposes 3 different replies. Click, edit, post.",
+      feature2Title: "6 Reply Tones",
+      feature2Desc: "Choose the style: Friendly, Professional, Fun, Educational, Motivating or Humorous.",
+      feature3Title: "Save Time",
+      feature3Desc: "Avoid typing the same replies again and again. AI drafts the base for you.",
+      ctaTitle: "Start saving time now",
+      footerTagline: "Manage your YouTube comments with AI",
+      contactLabel: "Contact",
+      myVideos: "My Videos",
+      searchVideo: "Search a video...",
+      selectVideo: "Select a video",
+      commentsCount: "Comments",
+      replied: "Replied",
+      aiReplyGenerator: "AI Reply Generator",
+      yourReply: "Your reply",
+      generating: "Generating...",
+      generatedSuggestions: "Generated suggestions",
+      clickToEdit: "Click to edit",
+      writeHere: "Write your reply here...",
+      writeSelf: "Write manually",
+      changeTone: "Change tone and regenerate",
+      selectVideoHint: "Select a video",
+      settingsNav: "Settings",
+      toastRepliesGenerated: "Replies generated!",
+      toastGenerationError: "Generation error",
+      toastReplyPosted: "Reply posted!",
+      toastError: "Error",
+      toastNetworkError: "Network error",
+      mockAuthor: "Loyal Subscriber",
+      mockComment: "This video is incredible! I love your energy. When is the next one?",
+      mockReply1: "Thanks so much! The next one is out next week, stay tuned!",
+      mockReply2: "So kind, thanks! We are working hard on episode 2.",
+      mockReply3: "Thanks for being here! See you next Tuesday",
+      proPlan: "Pro Plan",
     },
   } as const;
 
@@ -186,18 +280,18 @@ export default function Dashboard() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
               </span>
-              <span className="text-sm font-medium text-purple-900">Propulsé par Groq</span>
+              <span className="text-sm font-medium text-purple-900">{t("poweredBy")}</span>
             </div>
 
             <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-6 leading-[1.1]">
-              Ne manquez plus jamais <br className="hidden md:block"/>
+              {t("heroTitleA")} <br className="hidden md:block"/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8B5CF6] to-indigo-600">
-                une réponse.
+                {t("heroTitleB")}
               </span>
             </h1>
             
             <p className="max-w-2xl mx-auto text-xl text-gray-600 mb-10 leading-relaxed">
-              Commently analyse vos commentaires YouTube et génère 3 suggestions de réponse instantanément grâce à l'IA.
+              {t("heroSubtitle")}
             </p>
             
             <div className="flex flex-col items-center justify-center gap-4">
@@ -210,7 +304,7 @@ export default function Dashboard() {
               </button>
               
               <div className="text-sm text-gray-500 font-medium mt-2">
-                🔒 Via l'API Officielle YouTube
+                🔒 {t("viaYoutubeApi")}
               </div>
             </div>
 
@@ -224,37 +318,37 @@ export default function Dashboard() {
                     <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
                     <div className="w-3 h-3 rounded-full bg-green-400"></div>
                   </div>
-                  <div className="mx-auto text-xs font-bold text-gray-400 uppercase tracking-widest">
-                    Interface Simplifiée
-                  </div>
+                    <div className="mx-auto text-xs font-bold text-gray-400 uppercase tracking-widest">
+                    {t("simplifiedInterface")}
+                    </div>
                 </div>
                 <div className="p-8 grid md:grid-cols-5 gap-8 bg-white text-left">
                   <div className="md:col-span-2 space-y-4 border-r border-gray-100 pr-4">
-                    <p className="text-xs font-bold text-gray-400 uppercase">Commentaire reçu</p>
+                    <p className="text-xs font-bold text-gray-400 uppercase">{t("commentReceived")}</p>
                     <div className="flex gap-3">
                       <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 flex-shrink-0"></div>
                       <div>
-                        <div className="font-bold text-gray-900 text-sm">Abonné Fidèle</div>
+                        <div className="font-bold text-gray-900 text-sm">{t("mockAuthor")}</div>
                         <div className="text-gray-600 text-sm mt-1 bg-gray-50 p-3 rounded-lg rounded-tl-none">
-                          Incroyable cette vidéo ! J'adore ton énergie. Ça sort quand la suite ? 🔥
+                          {t("mockComment")} 🔥
                         </div>
                       </div>
                     </div>
                   </div>
                   <div className="md:col-span-3 space-y-4">
                     <div className="flex justify-between items-center">
-                      <p className="text-xs font-bold text-purple-600 uppercase">✨ Suggestions IA</p>
-                      <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">Ton : Amical</span>
+                      <p className="text-xs font-bold text-purple-600 uppercase">✨ {t("aiSuggestions")}</p>
+                      <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">{t("toneLabel")}</span>
                     </div>
                     <div className="space-y-3">
                       <div className="p-3 border border-purple-100 rounded-lg hover:border-purple-300 cursor-pointer transition-all bg-purple-50/50">
-                        <p className="text-sm text-gray-800">Merci beaucoup ! 🙏 La suite arrive la semaine prochaine, reste connecté !</p>
+                        <p className="text-sm text-gray-800">🙏 {t("mockReply1")}</p>
                       </div>
                       <div className="p-3 border border-gray-200 rounded-lg hover:border-purple-300 cursor-pointer transition-all opacity-70">
-                        <p className="text-sm text-gray-600">Trop sympa, merci ! 🔥 On bosse dur sur l'épisode 2.</p>
+                        <p className="text-sm text-gray-600">🔥 {t("mockReply2")}</p>
                       </div>
                       <div className="p-3 border border-gray-200 rounded-lg hover:border-purple-300 cursor-pointer transition-all opacity-70">
-                        <p className="text-sm text-gray-600">Merci à toi d'être là ! Rendez-vous mardi prochain 😉</p>
+                        <p className="text-sm text-gray-600">{t("mockReply3")} 😉</p>
                       </div>
                     </div>
                   </div>
@@ -268,7 +362,7 @@ export default function Dashboard() {
         <section className="py-12 border-y border-gray-100 bg-gray-50/50">
           <div className="max-w-7xl mx-auto px-4 text-center">
             <p className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-8">
-              Compatible avec
+              {t("compatibleWith")}
             </p>
             <div className="group flex justify-center items-center gap-4 transition-all duration-300 cursor-default">
               <svg className="w-10 h-10 text-red-600 transition-transform duration-300 group-hover:scale-125 group-hover:drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24">
@@ -285,31 +379,31 @@ export default function Dashboard() {
         <section className="py-24 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-extrabold text-gray-900 mb-4">La simplicité avant tout.</h2>
+              <h2 className="text-4xl font-extrabold text-gray-900 mb-4">{t("simplicityTitle")}</h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Pas de fonctionnalités inutiles. Juste ce qu'il faut pour répondre plus vite.
+                {t("simplicitySubtitle")}
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:border-purple-200 transition-colors group">
                 <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm text-3xl group-hover:scale-110 transition-transform">✨</div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">3 Suggestions IA</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">{t("feature1Title")}</h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Pour chaque commentaire, l'IA vous propose 3 réponses différentes. Cliquez, modifiez, postez.
+                  {t("feature1Desc")}
                 </p>
               </div>
               <div className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:border-blue-200 transition-colors group">
                 <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm text-3xl group-hover:scale-110 transition-transform">🎭</div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">6 Tons de Réponse</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">{t("feature2Title")}</h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Choisissez le style : Amical, Professionnel, Fun, Éducatif, Motivant ou Humoristique.
+                  {t("feature2Desc")}
                 </p>
               </div>
               <div className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:border-green-200 transition-colors group">
                 <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm text-3xl group-hover:scale-110 transition-transform">⚡</div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">Gain de Temps</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">{t("feature3Title")}</h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Évitez de taper les mêmes réponses encore et encore. L'IA rédige la base pour vous.
+                  {t("feature3Desc")}
                 </p>
               </div>
             </div>
@@ -320,7 +414,7 @@ export default function Dashboard() {
         <section className="py-24 bg-white border-t border-gray-100">
           <div className="max-w-4xl mx-auto px-4 text-center">
             <h2 className="text-4xl font-extrabold text-gray-900 mb-8">
-              Gagnez du temps dès maintenant
+              {t("ctaTitle")}
             </h2>
             <button
               onClick={() => signIn("google")}
@@ -339,11 +433,11 @@ export default function Dashboard() {
                 <span className="text-gray-900 font-bold text-xl">Commently</span>
                 <span className="text-gray-500 text-sm">© 2025</span>
               </div>
-              <p className="text-gray-500 text-sm">Gère tes commentaires YouTube avec l'IA</p>
+              <p className="text-gray-500 text-sm">{t("footerTagline")}</p>
             </div>
             <div className="flex gap-6">
               <a href="mailto:commently.contact@gmail.com" className="text-gray-500 hover:text-purple-600 font-medium text-sm transition-colors">
-                Contact : commently.contact@gmail.com
+                {t("contactLabel")} : commently.contact@gmail.com
               </a>
             </div>
           </div>
@@ -461,10 +555,10 @@ export default function Dashboard() {
       if (data.replies) {
         setReplies(data.replies);
         setViewMode('list');
-        setToast({ message: "✨ Réponses générées !", type: 'success' });
+        setToast({ message: `✨ ${t("toastRepliesGenerated")}`, type: 'success' });
       }
     } catch (error) {
-      setToast({ message: "❌ Erreur génération", type: 'error' });
+      setToast({ message: `❌ ${t("toastGenerationError")}`, type: 'error' });
     } finally { setGenerating(false); }
   }
 
@@ -486,7 +580,7 @@ export default function Dashboard() {
       });
       const data = await response.json();
       if (data.success) {
-        setToast({ message: "✅ Réponse postée !", type: 'success' });
+        setToast({ message: `✅ ${t("toastReplyPosted")}`, type: 'success' });
         
         // 1. Déclencher l'animation verte sur l'ID
         setAnimatingId(selectedComment.id);
@@ -501,10 +595,10 @@ export default function Dashboard() {
         }, 1000);
 
       } else {
-        setToast({ message: "❌ Erreur : " + data.error, type: 'error' });
+        setToast({ message: `❌ ${t("toastError")} : ${data.error}`, type: 'error' });
       }
     } catch (error) {
-      setToast({ message: "❌ Erreur réseau", type: 'error' });
+      setToast({ message: `❌ ${t("toastNetworkError")}`, type: 'error' });
     } finally { setPosting(false); }
   }
 
@@ -547,7 +641,7 @@ export default function Dashboard() {
           
           <Link href="/settings" className="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50 font-medium">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-            <span>Paramètres</span>
+            <span>{t("settingsNav")}</span>
           </Link>
         </nav>
 
@@ -556,22 +650,8 @@ export default function Dashboard() {
             <img src={session?.user?.image || "https://via.placeholder.com/40"} alt="User" className="w-10 h-10 rounded-full" />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-gray-900 truncate">{session?.user?.name || "User"}</p>
-              <p className="text-xs text-gray-500">Pro Plan</p>
+              <p className="text-xs text-gray-500">{t("proPlan")}</p>
             </div>
-          </div>
-          <div className="inline-flex items-center rounded-full border border-gray-200 bg-white p-1 text-xs font-semibold w-fit">
-            <button
-              onClick={() => setUiLang("fr")}
-              className={`px-2 py-1 rounded-full ${uiLang === "fr" ? "bg-gray-900 text-white" : "text-gray-600 hover:text-gray-900"}`}
-            >
-              FR
-            </button>
-            <button
-              onClick={() => setUiLang("en")}
-              className={`px-2 py-1 rounded-full ${uiLang === "en" ? "bg-gray-900 text-white" : "text-gray-600 hover:text-gray-900"}`}
-            >
-              EN
-            </button>
           </div>
           <button onClick={() => signOut()} className="w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 font-medium">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
@@ -584,12 +664,12 @@ export default function Dashboard() {
       <aside className="w-[380px] bg-white border-r border-gray-200 flex flex-col h-screen overflow-hidden">
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-900">Mes Vidéos</h2>
+            <h2 className="text-xl font-bold text-gray-900">{t("myVideos")}</h2>
             <button onClick={fetchComments} className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
             </button>
           </div>
-          <input type="text" placeholder="Chercher une vidéo..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#8B5CF6] focus:border-transparent text-gray-900" />
+          <input type="text" placeholder={t("searchVideo")} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#8B5CF6] focus:border-transparent text-gray-900" />
         </div>
         <div className="flex-1 overflow-y-auto">
           {videos.filter(video => video.title.toLowerCase().includes(searchQuery.toLowerCase())).map((video, index) => {
@@ -602,7 +682,7 @@ export default function Dashboard() {
                     {video.thumbnail && <img src={video.thumbnail} alt={video.title} className="w-20 h-14 rounded object-cover flex-shrink-0" />}
                     <div className="flex-1 min-w-0">
                       <h3 className={`font-semibold text-sm mb-1 line-clamp-2 ${isActive ? 'text-[#8B5CF6]' : 'text-gray-900'}`}>{video.title}</h3>
-                      <p className="text-xs text-gray-500 mb-2">{new Date(video.comments[0]?.publishedAt || Date.now()).toLocaleDateString("fr-FR")}</p>
+                      <p className="text-xs text-gray-500 mb-2">{new Date(video.comments[0]?.publishedAt || Date.now()).toLocaleDateString(uiLang === "en" ? "en-US" : "fr-FR")}</p>
                       {urgentCount > 0 && <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-[#FEE2E2] text-red-700">{urgentCount} urgent{urgentCount > 1 ? 's' : ''}</span>}
                     </div>
                   </div>
@@ -619,7 +699,7 @@ export default function Dashboard() {
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
                   <h1 className="text-2xl font-bold text-gray-900 mb-2">{selectedVideo}</h1>
-                  <p className="text-sm text-gray-500">{countByCategory.all} Commentaires</p>
+                  <p className="text-sm text-gray-500">{countByCategory.all} {t("commentsCount")}</p>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -656,11 +736,11 @@ export default function Dashboard() {
                             <span className="font-semibold text-gray-900">{comment.author}</span>
                             {/* BADGE RÉPONDU */}
                             {isReplied && (
-                              <span className="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider animate-fadeIn">
-                                RÉPONDU
+                          <span className="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider animate-fadeIn">
+                                {t("replied").toUpperCase()}
                               </span>
                             )}
-                            <span className="text-xs text-gray-500">• {new Date(comment.publishedAt).toLocaleDateString("fr-FR")}</span>
+                            <span className="text-xs text-gray-500">• {new Date(comment.publishedAt).toLocaleDateString(uiLang === "en" ? "en-US" : "fr-FR")}</span>
                           </div>
                         </div>
                       </div>
@@ -674,7 +754,7 @@ export default function Dashboard() {
                       {isReplied ? (
                         <div className="flex items-center space-x-1 text-green-600 font-medium text-sm">
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                          <span>Répondu</span>
+                          <span>{t("replied")}</span>
                         </div>
                       ) : (
                         <button onClick={() => openModal(comment)} className="flex items-center space-x-2 px-4 py-2 bg-[#8B5CF6] text-white rounded-lg hover:bg-[#7C3AED] transition-colors text-sm font-medium"><span>✨ {t("generateReply")}</span></button>
@@ -686,7 +766,7 @@ export default function Dashboard() {
             </div>
           </>
         ) : (
-          <div className="flex items-center justify-center h-full text-gray-500"><p>Sélectionnez une vidéo</p></div>
+          <div className="flex items-center justify-center h-full text-gray-500"><p>{t("selectVideo")}</p></div>
         )}
       </main>
 
@@ -696,14 +776,14 @@ export default function Dashboard() {
           <div className="relative bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-xl font-bold text-gray-900">✨ Générateur de réponse IA</h3>
+              <h3 className="text-xl font-bold text-gray-900">✨ {t("aiReplyGenerator")}</h3>
               <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 text-2xl">×</button>
             </div>
 
             <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
               {/* Commentaire reçu */}
               <div className="mb-6">
-                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">Commentaire reçu</p>
+                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">{t("commentReceived")}</p>
                 <div className="bg-gray-50 rounded-lg p-4">
                   <div className="flex items-start space-x-3">
                     <img src={selectedComment.authorImage} alt={selectedComment.author} className="w-10 h-10 rounded-full" />
@@ -718,7 +798,7 @@ export default function Dashboard() {
               {/* === MODE ÉDITION (VUE FINALE AVANT ENVOI) === */}
               {viewMode === 'editor' ? (
                 <div className="animate-fadeIn">
-                  <p className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">VOTRE RÉPONSE</p>
+                  <p className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-2">{t("yourReply").toUpperCase()}</p>
                   
                   {/* ZONE DE TEXTE STYLE SCREENSHOT */}
                   <div className="border border-purple-300 rounded-xl p-1 overflow-hidden focus-within:ring-2 focus-within:ring-purple-500 transition-all">
@@ -726,7 +806,7 @@ export default function Dashboard() {
                       value={draftReply}
                       onChange={(e) => setDraftReply(e.target.value)}
                       className="w-full h-32 p-4 outline-none resize-none text-gray-800 text-base"
-                      placeholder="Écrivez votre réponse ici..."
+                      placeholder={t("writeHere")}
                       autoFocus
                     />
                   </div>
@@ -809,12 +889,12 @@ export default function Dashboard() {
                   {generating ? (
                     <div className="text-center py-12">
                       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B5CF6] mx-auto mb-4"></div>
-                      <p className="text-gray-600">Génération en cours...</p>
+                      <p className="text-gray-600">{t("generating")}</p>
                     </div>
                   ) : replies.length > 0 ? (
                     /* Liste des résultats IA */
                     <div className="space-y-4">
-                      <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Suggestions générées</p>
+                      <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t("generatedSuggestions")}</p>
                       {replies.map((reply, index) => (
                         <div
                           key={index}
@@ -826,7 +906,7 @@ export default function Dashboard() {
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                           </div>
                           <div className="mt-2 text-xs text-[#8B5CF6] font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                            Cliquez pour modifier
+                            {t("clickToEdit")}
                           </div>
                         </div>
                       ))}

@@ -28,6 +28,7 @@ export default function Dashboard() {
 
   const uiText = {
     fr: {
+      dashboard: "Dashboard",
       automation: "Automatisation",
       settings: "Parametres",
       signOut: "Deconnexion",
@@ -45,8 +46,45 @@ export default function Dashboard() {
       changeTone: "Changer le ton et regenerer",
       generate3: "Generer 3 suggestions",
       close: "Fermer",
+      loading: "Chargement...",
+      myVideos: "Mes Videos",
+      searchVideo: "Chercher une video...",
+      noVideos: "Aucune video trouvee",
+      comments: "Commentaires",
+      publishedOn: "Publiee le",
+      sortBy: "Trier par :",
+      sortAi: "Importance IA",
+      sortDate: "Date",
+      sortLikes: "Likes",
+      selectVideoTitle: "Selectionnez une video",
+      selectVideoSubtitle: "Choisissez une video dans la liste pour voir ses commentaires",
+      aiAnalysisPriority: "Avis",
+      aiAnalysisSpam: "Spam",
+      aiAnalysisNormal: "Emoji",
+      aiPriorityDesc: "Commentaire necessitant une reponse prioritaire.",
+      aiSpamDesc: "Commentaire identifie comme spam.",
+      aiNormalDesc: "Commentaire standard positif.",
+      replyCopied: "Reponse copiee !",
+      generating: "Generation en cours...",
+      aiReplyGenerator: "Generateur de reponse IA",
+      commentReceived: "Commentaire recu",
+      generatedSuggestions: "Suggestions generees",
+      selectOrRegenerate: "Selectionnez une reponse ou regenerez",
+      noCommentsForFilter: "Aucun commentaire trouve pour ce filtre",
+      toastLike: "Commentaire like !",
+      toastLikeError: "Erreur lors du like",
+      toastRepliesGenerated: "Reponses generees avec succes !",
+      toastRepliesGenerationError: "Erreur lors de la generation des reponses",
+      toastGenerationError: "Erreur lors de la generation",
+      toastReplyPosted: "Reponse postee avec succes sur YouTube !",
+      toastError: "Erreur",
+      toastUnknownError: "Erreur inconnue",
+      toastPublishError: "Erreur lors de la publication",
+      proPlan: "Plan Pro",
+      activeInstructions: "Instructions personnalisees actives :",
     },
     en: {
+      dashboard: "Dashboard",
       automation: "Automation",
       settings: "Settings",
       signOut: "Sign out",
@@ -64,6 +102,42 @@ export default function Dashboard() {
       changeTone: "Change tone and regenerate",
       generate3: "Generate 3 suggestions",
       close: "Close",
+      loading: "Loading...",
+      myVideos: "My Videos",
+      searchVideo: "Search a video...",
+      noVideos: "No videos found",
+      comments: "Comments",
+      publishedOn: "Published on",
+      sortBy: "Sort by:",
+      sortAi: "AI importance",
+      sortDate: "Date",
+      sortLikes: "Likes",
+      selectVideoTitle: "Select a video",
+      selectVideoSubtitle: "Choose a video from the list to view its comments",
+      aiAnalysisPriority: "Alert",
+      aiAnalysisSpam: "Spam",
+      aiAnalysisNormal: "Emoji",
+      aiPriorityDesc: "Comment requiring a priority response.",
+      aiSpamDesc: "Comment identified as spam.",
+      aiNormalDesc: "Standard positive comment.",
+      replyCopied: "Reply copied!",
+      generating: "Generating...",
+      aiReplyGenerator: "AI Reply Generator",
+      commentReceived: "Comment received",
+      generatedSuggestions: "Generated suggestions",
+      selectOrRegenerate: "Select a reply or regenerate",
+      noCommentsForFilter: "No comments found for this filter",
+      toastLike: "Comment liked!",
+      toastLikeError: "Error while liking",
+      toastRepliesGenerated: "Replies generated successfully!",
+      toastRepliesGenerationError: "Error while generating replies",
+      toastGenerationError: "Generation error",
+      toastReplyPosted: "Reply posted successfully on YouTube!",
+      toastError: "Error",
+      toastUnknownError: "Unknown error",
+      toastPublishError: "Error while posting",
+      proPlan: "Pro Plan",
+      activeInstructions: "Active custom instructions:",
     },
   } as const;
 
@@ -210,14 +284,14 @@ export default function Dashboard() {
       } else {
         likedSet.add(commentId);
         setLikedComments(new Set(likedSet));
-        setToast({ message: "❤️ Commentaire liké !", type: 'success' });
+        setToast({ message: `❤️ ${t("toastLike")}`, type: 'success' });
         setTimeout(() => setToast(null), 3000);
       }
       
       localStorage.setItem("likedComments", JSON.stringify([...likedSet]));
     } catch (error) {
       console.error("Erreur like:", error);
-      setToast({ message: "❌ Erreur lors du like", type: 'error' });
+      setToast({ message: `❌ ${t("toastLikeError")}`, type: 'error' });
       setTimeout(() => setToast(null), 3000);
     }
   }
@@ -248,15 +322,15 @@ export default function Dashboard() {
       
       if (data.replies) {
         setReplies(data.replies);
-        setToast({ message: "✨ Réponses générées avec succès !", type: 'success' });
+        setToast({ message: `✨ ${t("toastRepliesGenerated")}`, type: 'success' });
         setTimeout(() => setToast(null), 3000);
       } else {
-        setToast({ message: "❌ Erreur lors de la génération des réponses", type: 'error' });
+        setToast({ message: `❌ ${t("toastRepliesGenerationError")}`, type: 'error' });
         setTimeout(() => setToast(null), 3000);
       }
     } catch (error) {
       console.error("Erreur:", error);
-      setToast({ message: "❌ Erreur lors de la génération", type: 'error' });
+      setToast({ message: `❌ ${t("toastGenerationError")}`, type: 'error' });
       setTimeout(() => setToast(null), 3000);
     } finally {
       setGenerating(false);
@@ -281,17 +355,17 @@ export default function Dashboard() {
       const data = await response.json();
 
       if (data.success) {
-        setToast({ message: "✅ Réponse postée avec succès sur YouTube !", type: 'success' });
+        setToast({ message: `✅ ${t("toastReplyPosted")}`, type: 'success' });
         setTimeout(() => setToast(null), 3000);
         closeModal();
         fetchComments();
       } else {
-        setToast({ message: "❌ Erreur : " + (data.error || "Erreur inconnue"), type: 'error' });
+        setToast({ message: `❌ ${t("toastError")} : ${data.error || t("toastUnknownError")}`, type: 'error' });
         setTimeout(() => setToast(null), 3000);
       }
     } catch (error) {
       console.error("Erreur:", error);
-      setToast({ message: "❌ Erreur lors de la publication", type: 'error' });
+      setToast({ message: `❌ ${t("toastPublishError")}`, type: 'error' });
       setTimeout(() => setToast(null), 3000);
     } finally {
       setPosting(false);
@@ -321,7 +395,7 @@ export default function Dashboard() {
       <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B5CF6] mx-auto mb-4"></div>
-          <p className="text-gray-600">Chargement...</p>
+          <p className="text-gray-600">{t("loading")}</p>
         </div>
       </div>
     );
@@ -350,7 +424,7 @@ export default function Dashboard() {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
             </svg>
-            <span>Dashboard</span>
+            <span>{t("dashboard")}</span>
           </Link>
           
           <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50 font-medium">
@@ -384,25 +458,9 @@ export default function Dashboard() {
               <p className="text-sm font-semibold text-gray-900 truncate">
                 {session?.user?.name || "Squeezie Tech"}
               </p>
-              <p className="text-xs text-gray-500">Pro Plan</p>
+              <p className="text-xs text-gray-500">{t("proPlan")}</p>
             </div>
           </div>
-          
-          <div className="inline-flex items-center rounded-full border border-gray-200 bg-white p-1 text-xs font-semibold w-fit">
-            <button
-              onClick={() => setUiLang("fr")}
-              className={`px-2 py-1 rounded-full ${uiLang === "fr" ? "bg-gray-900 text-white" : "text-gray-600 hover:text-gray-900"}`}
-            >
-              FR
-            </button>
-            <button
-              onClick={() => setUiLang("en")}
-              className={`px-2 py-1 rounded-full ${uiLang === "en" ? "bg-gray-900 text-white" : "text-gray-600 hover:text-gray-900"}`}
-            >
-              EN
-            </button>
-          </div>
-          
           <button
             onClick={() => signOut({ callbackUrl: "/" })}
             className="w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 font-medium"
@@ -420,7 +478,7 @@ export default function Dashboard() {
         {/* Header */}
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-900">Mes Vidéos</h2>
+            <h2 className="text-xl font-bold text-gray-900">{t("myVideos")}</h2>
             <button
               onClick={fetchComments}
               className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
@@ -434,7 +492,7 @@ export default function Dashboard() {
           {/* Recherche */}
           <input
             type="text"
-            placeholder="Chercher une vidéo..."
+            placeholder={t("searchVideo")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#8B5CF6] focus:border-transparent"
@@ -473,7 +531,7 @@ export default function Dashboard() {
                         {video.title}
                       </h3>
                       <p className="text-xs text-gray-500 mb-2">
-                        {new Date(video.comments[0]?.publishedAt || Date.now()).toLocaleDateString("fr-FR")}
+                        {new Date(video.comments[0]?.publishedAt || Date.now()).toLocaleDateString(uiLang === "en" ? "en-US" : "fr-FR")}
                       </p>
                       {urgentCount > 0 && (
                         <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-[#FEE2E2] text-red-700">
@@ -488,7 +546,7 @@ export default function Dashboard() {
           
           {videos.length === 0 && (
             <div className="p-8 text-center text-gray-500">
-              <p>Aucune vidéo trouvée</p>
+              <p>{t("noVideos")}</p>
             </div>
           )}
         </div>
@@ -506,15 +564,15 @@ export default function Dashboard() {
                     {selectedVideo}
                   </h1>
                   <p className="text-sm text-gray-500">
-                    {countByCategory.all} Commentaires • Publiée le {selectedVideoComments[0] ? new Date(selectedVideoComments[0].publishedAt).toLocaleDateString("fr-FR") : 'Date inconnue'}
+                    {countByCategory.all} {t("comments")} • {t("publishedOn")} {selectedVideoComments[0] ? new Date(selectedVideoComments[0].publishedAt).toLocaleDateString(uiLang === "en" ? "en-US" : "fr-FR") : (uiLang === "en" ? "Unknown date" : "Date inconnue")}
                   </p>
                 </div>
                 
                 {/* Dropdown Trier */}
                 <select className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]">
-                  <option>Trier par : Importance IA</option>
-                  <option>Trier par : Date</option>
-                  <option>Trier par : Likes</option>
+                  <option>{t("sortBy")} {t("sortAi")}</option>
+                  <option>{t("sortBy")} {t("sortDate")}</option>
+                  <option>{t("sortBy")} {t("sortLikes")}</option>
                 </select>
               </div>
 
@@ -596,7 +654,7 @@ export default function Dashboard() {
                           <div className="flex items-center space-x-2">
                             <span className="font-semibold text-gray-900">{comment.author}</span>
                             <span className="text-xs text-gray-500">
-                              {new Date(comment.publishedAt).toLocaleDateString("fr-FR")}
+                              {new Date(comment.publishedAt).toLocaleDateString(uiLang === "en" ? "en-US" : "fr-FR")}
                             </span>
                           </div>
                         </div>
@@ -630,15 +688,15 @@ export default function Dashboard() {
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-1">
                             <span className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-medium">
-                              {category === 'URGENT' ? 'Avis' : category === 'SPAM' ? 'Spam' : 'Emoji'}
+                              {category === 'URGENT' ? t("aiAnalysisPriority") : category === 'SPAM' ? t("aiAnalysisSpam") : t("aiAnalysisNormal")}
                             </span>
                           </div>
                           <p className="text-sm text-gray-700">
                             {category === 'URGENT' 
-                              ? 'Commentaire nécessitant une réponse prioritaire.' 
+                              ? t("aiPriorityDesc") 
                               : category === 'SPAM'
-                              ? 'Commentaire identifié comme spam.'
-                              : 'Commentaire standard positif.'}
+                              ? t("aiSpamDesc")
+                              : t("aiNormalDesc")}
                           </p>
                         </div>
                       </div>
@@ -674,7 +732,7 @@ export default function Dashboard() {
               
               {filteredComments.length === 0 && (
                 <div className="text-center py-12 text-gray-500">
-                  <p>Aucun commentaire trouvé pour ce filtre</p>
+                  <p>{t("noCommentsForFilter")}</p>
                 </div>
               )}
             </div>
@@ -682,8 +740,8 @@ export default function Dashboard() {
         ) : (
           <div className="flex items-center justify-center h-full text-gray-500">
             <div className="text-center">
-              <p className="text-lg mb-2">Sélectionnez une vidéo</p>
-              <p className="text-sm">Choisissez une vidéo dans la liste pour voir ses commentaires</p>
+              <p className="text-lg mb-2">{t("selectVideoTitle")}</p>
+              <p className="text-sm">{t("selectVideoSubtitle")}</p>
             </div>
           </div>
         )}
@@ -695,7 +753,7 @@ export default function Dashboard() {
           <div className="relative bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-xl font-bold text-gray-900">✨ Générateur de réponse IA</h3>
+              <h3 className="text-xl font-bold text-gray-900">✨ {t("aiReplyGenerator")}</h3>
               <button
                 onClick={closeModal}
                 className="text-gray-400 hover:text-gray-600 text-2xl"
@@ -708,7 +766,7 @@ export default function Dashboard() {
               {/* Commentaire reçu */}
               <div className="mb-6">
                 <p className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">
-                  Commentaire reçu
+                  {t("commentReceived")}
                 </p>
                 <div className="bg-gray-50 rounded-lg p-4">
                   <div className="flex items-start space-x-3">
@@ -767,7 +825,7 @@ export default function Dashboard() {
                   {customInstructions && (
                     <div className="mt-3 bg-purple-50 border border-purple-200 rounded-lg p-3">
                       <p className="text-xs text-purple-900">
-                        <span className="font-semibold text-purple-900">✨ Instructions personnalisées actives :</span>
+                        <span className="font-semibold text-purple-900">✨ {t("activeInstructions")}</span>
                         <br />
                         <span className="mt-1 inline-block text-purple-800">{customInstructions}</span>
                       </p>
@@ -780,10 +838,11 @@ export default function Dashboard() {
               {generating ? (
                 <div className="text-center py-12">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B5CF6] mx-auto mb-4"></div>
-                  <p className="text-gray-600">Génération en cours...</p>
+                  <p className="text-gray-600">{t("generating")}</p>
                 </div>
               ) : replies.length > 0 ? (
                 <div className="space-y-4">
+                  <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t("generatedSuggestions")}</p>
                   {replies.map((reply, index) => (
                     <div
                       key={index}
@@ -794,7 +853,7 @@ export default function Dashboard() {
                         <button
                           onClick={() => {
                             navigator.clipboard.writeText(reply);
-                            setToast({ message: "📋 Réponse copiée !", type: 'success' });
+                            setToast({ message: `📋 ${t("replyCopied")}`, type: 'success' });
                             setTimeout(() => setToast(null), 2000);
                           }}
                           className="text-blue-600 hover:text-blue-700 text-sm font-medium px-3 py-1"
@@ -841,7 +900,7 @@ export default function Dashboard() {
               </button>
               {replies.length > 0 && !posting && (
                 <p className="text-sm text-gray-500">
-                  Sélectionnez une réponse ou regénérez
+                  {t("selectOrRegenerate")}
                 </p>
               )}
             </div>

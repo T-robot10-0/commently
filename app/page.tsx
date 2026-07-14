@@ -435,10 +435,16 @@ export default function Dashboard() {
               </div>
               <p className="text-gray-500 text-sm">{t("footerTagline")}</p>
             </div>
-            <div className="flex gap-6">
+            <div className="flex gap-6 flex-wrap justify-center md:justify-end">
               <a href="mailto:commently.contact@gmail.com" className="text-gray-500 hover:text-purple-600 font-medium text-sm transition-colors">
                 {t("contactLabel")} : commently.contact@gmail.com
               </a>
+              <Link href="/privacy" className="text-gray-500 hover:text-purple-600 font-medium text-sm transition-colors">
+                Politique de confidentialité
+              </Link>
+              <Link href="/terms" className="text-gray-500 hover:text-purple-600 font-medium text-sm transition-colors">
+                Conditions d'utilisation
+              </Link>
             </div>
           </div>
         </footer>

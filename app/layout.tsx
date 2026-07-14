@@ -18,6 +18,7 @@ export default function RootLayout({
       <head>
         <title>Commently - Gestionnaire YouTube IA</title>
         <meta name="description" content="Gérez vos commentaires YouTube 10x plus vite avec l'IA." />
+        <meta name="google-site-verification" content="5fA9GrgRcj3PuX0ioKEP7oTQKyNymq0zamoEJmlfLrc" />
       </head>
       <body className={inter.className}>
         <SessionProvider>
